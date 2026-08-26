@@ -46,15 +46,45 @@ public class Yapper {
                 tasks[taskIndex].markAsNotDone();
                 System.out.println(" OK, I've marked this task as not done yet:");
                 System.out.println("  " + tasks[taskIndex]);
-            } else {
-                tasks[taskCount] = new Task(command);
+            } else if (command.startsWith("todo ")) {
+                tasks[taskCount] = new Todo(command.substring(5).trim());
                 taskCount++;
-                System.out.println(" added: " + command);
+                printTaskAdded(tasks[taskCount - 1], taskCount);
+            } else if (command.startsWith("deadline ")) {
+                String details = command.substring(9);
+                int bySeparator = details.indexOf(" /by ");
+                String description = details.substring(0, bySeparator).trim();
+                String by = details.substring(bySeparator + 5).trim();
+                tasks[taskCount] = new Deadline(description, by);
+                taskCount++;
+                printTaskAdded(tasks[taskCount - 1], taskCount);
+            } else if (command.startsWith("event ")) {
+                String details = command.substring(6);
+                int fromSeparator = details.indexOf(" /from ");
+                int toSeparator = details.indexOf(" /to ", fromSeparator + 7);
+                String description = details.substring(0, fromSeparator).trim();
+                String from = details.substring(fromSeparator + 7, toSeparator).trim();
+                String to = details.substring(toSeparator + 5).trim();
+                tasks[taskCount] = new Event(description, from, to);
+                taskCount++;
+                printTaskAdded(tasks[taskCount - 1], taskCount);
             }
             System.out.println(SEPARATOR);
         }
 
         System.out.println(" Bye. Hope to see you again soon!");
         System.out.println(SEPARATOR);
+    }
+
+    /**
+     * Prints the confirmation shown after a task is added.
+     *
+     * @param task Task that was added.
+     * @param taskCount Current number of tasks.
+     */
+    private static void printTaskAdded(Task task, int taskCount) {
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("   " + task);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
     }
 }
