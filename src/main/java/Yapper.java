@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -5,8 +6,6 @@ import java.util.Scanner;
  */
 public class Yapper {
     private static final String SEPARATOR = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
-
     public static void main(String[] args) {
         String banner = "__   __                               \n"
                 + "\\ \\ / /_ _ _ __  _ __   ___ _ __     \n"
@@ -17,62 +16,64 @@ public class Yapper {
 
         System.out.println(SEPARATOR);
         System.out.print(banner);
-        System.out.println(" Hello! I'm Yapper.");
-        System.out.println(" What can I do for you?");
+        System.out.println(" WELL, HELLO THERE! I'm Yapper, your spectacularly talkative task companion!");
+        System.out.println(" I am positively BURSTING with enthusiasm to organize your life. What shall we do?");
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[MAX_TASKS];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim();
             if (command.equals("bye")) {
                 break;
             }
 
-            if (command.equals("list")) {
-                System.out.println(" Here are the tasks in your list:");
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println(" " + (i + 1) + "." + tasks[i]);
+            try {
+                if (command.equals("list")) {
+                    printTaskList(tasks);
+                } else if (command.equals("help")) {
+                    printHelp();
+                } else if (isCommand(command, "mark")) {
+                    int taskIndex = parseTaskIndex(command, "mark", tasks.size());
+                    tasks.get(taskIndex).markAsDone();
+                    System.out.println(" CONFETTI CANNONS! This task is now officially, unmistakably, spectacularly DONE:");
+                    System.out.println("  " + tasks.get(taskIndex));
+                } else if (isCommand(command, "unmark")) {
+                    int taskIndex = parseTaskIndex(command, "unmark", tasks.size());
+                    tasks.get(taskIndex).markAsNotDone();
+                    System.out.println(" PLOT TWIST! This task has returned to the thrilling realm of NOT DONE YET:");
+                    System.out.println("  " + tasks.get(taskIndex));
+                } else if (isCommand(command, "delete")) {
+                    int taskIndex = parseTaskIndex(command, "delete", tasks.size());
+                    Task removedTask = tasks.remove(taskIndex);
+                    printTaskDeleted(removedTask, tasks.size());
+                } else if (isCommand(command, "todo")) {
+                    String description = getTaskDescription(command, "todo");
+                    Task task = new Todo(description);
+                    tasks.add(task);
+                    printTaskAdded(task, tasks.size());
+                } else if (isCommand(command, "deadline")) {
+                    Task task = parseDeadline(command);
+                    tasks.add(task);
+                    printTaskAdded(task, tasks.size());
+                } else if (isCommand(command, "event")) {
+                    Task task = parseEvent(command);
+                    tasks.add(task);
+                    printTaskAdded(task, tasks.size());
+                } else {
+                    throw new YapperException("Please precede a task with a command to add it. "
+                            + "Otherwise, type 'help' for a list of commands.");
                 }
-            } else if (command.startsWith("mark ")) {
-                int taskIndex = Integer.parseInt(command.substring(5)) - 1;
-                tasks[taskIndex].markAsDone();
-                System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("  " + tasks[taskIndex]);
-            } else if (command.startsWith("unmark ")) {
-                int taskIndex = Integer.parseInt(command.substring(7)) - 1;
-                tasks[taskIndex].markAsNotDone();
-                System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("  " + tasks[taskIndex]);
-            } else if (command.startsWith("todo ")) {
-                tasks[taskCount] = new Todo(command.substring(5).trim());
-                taskCount++;
-                printTaskAdded(tasks[taskCount - 1], taskCount);
-            } else if (command.startsWith("deadline ")) {
-                String details = command.substring(9);
-                int bySeparator = details.indexOf(" /by ");
-                String description = details.substring(0, bySeparator).trim();
-                String by = details.substring(bySeparator + 5).trim();
-                tasks[taskCount] = new Deadline(description, by);
-                taskCount++;
-                printTaskAdded(tasks[taskCount - 1], taskCount);
-            } else if (command.startsWith("event ")) {
-                String details = command.substring(6);
-                int fromSeparator = details.indexOf(" /from ");
-                int toSeparator = details.indexOf(" /to ", fromSeparator + 7);
-                String description = details.substring(0, fromSeparator).trim();
-                String from = details.substring(fromSeparator + 7, toSeparator).trim();
-                String to = details.substring(toSeparator + 5).trim();
-                tasks[taskCount] = new Event(description, from, to);
-                taskCount++;
-                printTaskAdded(tasks[taskCount - 1], taskCount);
+            } catch (YapperException exception) {
+                System.out.println(" WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: "
+                        + exception.getMessage());
             }
             System.out.println(SEPARATOR);
         }
 
-        System.out.println(" Bye. Hope to see you again soon!");
+        System.out.println(" FAREWELL, magnificent human! Yapper shall now stop talking--an historic occasion!");
+        System.out.println(" Return soon, because your tasks and I will have an absolutely enormous amount to discuss.");
         System.out.println(SEPARATOR);
     }
 
@@ -83,8 +84,108 @@ public class Yapper {
      * @param taskCount Current number of tasks.
      */
     private static void printTaskAdded(Task task, int taskCount) {
-        System.out.println(" Got it. I've added this task:");
+        System.out.println(" OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:");
         System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println(" Your legendary list now contains " + taskCount
+                + " task(s). Yes, I counted them personally!");
+    }
+
+    /**
+     * Prints the confirmation shown after a task is deleted.
+     *
+     * @param task Task that was deleted.
+     * @param taskCount Current number of tasks.
+     */
+    private static void printTaskDeleted(Task task, int taskCount) {
+        System.out.println(" BEHOLD! With one decisive flourish, I have removed this task from existence:");
+        System.out.println("   " + task);
+        System.out.println(" Your freshly streamlined list now contains " + taskCount
+                + " task(s). Delightfully tidy!");
+    }
+
+    /** Returns whether the input starts with the specified complete command word. */
+    private static boolean isCommand(String input, String command) {
+        return input.equals(command) || input.startsWith(command + " ");
+    }
+
+    /** Extracts and validates a task description following a command word. */
+    private static String getTaskDescription(String input, String command) throws YapperException {
+        String description = input.substring(command.length()).trim();
+        if (description.isEmpty()) {
+            throw new YapperException("The " + command + " description cannot be empty. "
+                    + "Try: " + command + " <task description>");
+        }
+        return description;
+    }
+
+    /** Parses and validates the task number supplied to a task-index command. */
+    private static int parseTaskIndex(String input, String command, int taskCount)
+            throws YapperException {
+        String indexText = input.substring(command.length()).trim();
+        if (indexText.isEmpty()) {
+            throw new YapperException("Please specify a task number. Try: " + command + " <task number>");
+        }
+
+        try {
+            int taskIndex = Integer.parseInt(indexText) - 1;
+            if (taskIndex < 0 || taskIndex >= taskCount) {
+                throw new YapperException("Task number " + indexText + " is not in the list. "
+                        + "Type 'list' to see the available task numbers.");
+            }
+            return taskIndex;
+        } catch (NumberFormatException exception) {
+            throw new YapperException("'" + indexText + "' is not a valid task number. "
+                    + "Try: " + command + " <task number>");
+        }
+    }
+
+    /** Parses a deadline command, including its required /by value. */
+    private static Deadline parseDeadline(String input) throws YapperException {
+        String details = getTaskDescription(input, "deadline");
+        int bySeparator = details.indexOf(" /by ");
+        if (bySeparator <= 0 || bySeparator + 5 >= details.length()) {
+            throw new YapperException("A deadline needs a description and a due date. "
+                    + "Try: deadline <task description> /by <date or time>");
+        }
+        String description = details.substring(0, bySeparator).trim();
+        String by = details.substring(bySeparator + 5).trim();
+        return new Deadline(description, by);
+    }
+
+    /** Parses an event command, including its required /from and /to values. */
+    private static Event parseEvent(String input) throws YapperException {
+        String details = getTaskDescription(input, "event");
+        int fromSeparator = details.indexOf(" /from ");
+        int toSeparator = fromSeparator < 0 ? -1 : details.indexOf(" /to ", fromSeparator + 7);
+        if (fromSeparator <= 0 || toSeparator <= fromSeparator + 7 || toSeparator + 5 >= details.length()) {
+            throw new YapperException("An event needs a description, start, and end. "
+                    + "Try: event <task description> /from <start> /to <end>");
+        }
+        String description = details.substring(0, fromSeparator).trim();
+        String from = details.substring(fromSeparator + 7, toSeparator).trim();
+        String to = details.substring(toSeparator + 5).trim();
+        return new Event(description, from, to);
+    }
+
+    /** Prints all tasks currently stored by the chatbot. */
+    private static void printTaskList(ArrayList<Task> tasks) {
+        System.out.println(" ATTENTION, EVERYONE! Yapper proudly presents your complete and glorious task list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + tasks.get(i));
+        }
+    }
+
+    /** Prints the running list of commands supported by the chatbot. */
+    private static void printHelp() {
+        System.out.println(" PREPARE YOURSELF! Here is Yapper's impressively comprehensive command repertoire:");
+        System.out.println("  todo <description>");
+        System.out.println("  deadline <description> /by <date or time>");
+        System.out.println("  event <description> /from <start> /to <end>");
+        System.out.println("  list");
+        System.out.println("  mark <task number>");
+        System.out.println("  unmark <task number>");
+        System.out.println("  delete <task number>");
+        System.out.println("  help");
+        System.out.println("  bye");
     }
 }
