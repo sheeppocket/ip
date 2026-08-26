@@ -25,45 +25,24 @@ public class Yapper {
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine().trim();
-            if (command.equals("bye")) {
+            CommandType commandType = CommandType.from(command);
+            if (commandType == CommandType.BYE) {
                 break;
             }
 
             try {
-                if (command.equals("list")) {
-                    printTaskList(tasks);
-                } else if (command.equals("help")) {
-                    printHelp();
-                } else if (isCommand(command, "mark")) {
-                    int taskIndex = parseTaskIndex(command, "mark", tasks.size());
-                    tasks.get(taskIndex).markAsDone();
-                    System.out.println(" CONFETTI CANNONS! This task is now officially, unmistakably, spectacularly DONE:");
-                    System.out.println("  " + tasks.get(taskIndex));
-                } else if (isCommand(command, "unmark")) {
-                    int taskIndex = parseTaskIndex(command, "unmark", tasks.size());
-                    tasks.get(taskIndex).markAsNotDone();
-                    System.out.println(" PLOT TWIST! This task has returned to the thrilling realm of NOT DONE YET:");
-                    System.out.println("  " + tasks.get(taskIndex));
-                } else if (isCommand(command, "delete")) {
-                    int taskIndex = parseTaskIndex(command, "delete", tasks.size());
-                    Task removedTask = tasks.remove(taskIndex);
-                    printTaskDeleted(removedTask, tasks.size());
-                } else if (isCommand(command, "todo")) {
-                    String description = getTaskDescription(command, "todo");
-                    Task task = new Todo(description);
-                    tasks.add(task);
-                    printTaskAdded(task, tasks.size());
-                } else if (isCommand(command, "deadline")) {
-                    Task task = parseDeadline(command);
-                    tasks.add(task);
-                    printTaskAdded(task, tasks.size());
-                } else if (isCommand(command, "event")) {
-                    Task task = parseEvent(command);
-                    tasks.add(task);
-                    printTaskAdded(task, tasks.size());
-                } else {
-                    throw new YapperException("Please precede a task with a command to add it. "
-                            + "Otherwise, type 'help' for a list of commands.");
+                switch (commandType) {
+                case LIST -> printTaskList(tasks);
+                case HELP -> printHelp();
+                case MARK -> markTask(command, tasks);
+                case UNMARK -> unmarkTask(command, tasks);
+                case DELETE -> deleteTask(command, tasks);
+                case TODO -> addTask(new Todo(getTaskDescription(command, "todo")), tasks);
+                case DEADLINE -> addTask(parseDeadline(command), tasks);
+                case EVENT -> addTask(parseEvent(command), tasks);
+                case UNKNOWN -> throw new YapperException("Please precede a task with a command to add it. "
+                        + "Otherwise, type 'help' for a list of commands.");
+                case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");
                 }
             } catch (YapperException exception) {
                 System.out.println(" WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: "
@@ -103,9 +82,33 @@ public class Yapper {
                 + " task(s). Delightfully tidy!");
     }
 
-    /** Returns whether the input starts with the specified complete command word. */
-    private static boolean isCommand(String input, String command) {
-        return input.equals(command) || input.startsWith(command + " ");
+    /** Adds a task and prints Yapper's confirmation. */
+    private static void addTask(Task task, ArrayList<Task> tasks) {
+        tasks.add(task);
+        printTaskAdded(task, tasks.size());
+    }
+
+    /** Marks the task selected by a mark command as completed. */
+    private static void markTask(String input, ArrayList<Task> tasks) throws YapperException {
+        int taskIndex = parseTaskIndex(input, "mark", tasks.size());
+        tasks.get(taskIndex).markAsDone();
+        System.out.println(" CONFETTI CANNONS! This task is now officially, unmistakably, spectacularly DONE:");
+        System.out.println("  " + tasks.get(taskIndex));
+    }
+
+    /** Marks the task selected by an unmark command as incomplete. */
+    private static void unmarkTask(String input, ArrayList<Task> tasks) throws YapperException {
+        int taskIndex = parseTaskIndex(input, "unmark", tasks.size());
+        tasks.get(taskIndex).markAsNotDone();
+        System.out.println(" PLOT TWIST! This task has returned to the thrilling realm of NOT DONE YET:");
+        System.out.println("  " + tasks.get(taskIndex));
+    }
+
+    /** Removes the task selected by a delete command. */
+    private static void deleteTask(String input, ArrayList<Task> tasks) throws YapperException {
+        int taskIndex = parseTaskIndex(input, "delete", tasks.size());
+        Task removedTask = tasks.remove(taskIndex);
+        printTaskDeleted(removedTask, tasks.size());
     }
 
     /** Extracts and validates a task description following a command word. */
