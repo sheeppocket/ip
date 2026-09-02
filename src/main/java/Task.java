@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 /**
  * Represents a task and whether it has been completed.
  */
@@ -41,6 +43,17 @@ public class Task {
      */
     public String toDataString() {
         return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
+     * Returns whether this task occurs on the given date.
+     * Tasks without dates do not occur on any particular date.
+     *
+     * @param date Date to check.
+     * @return {@code true} if the task occurs on that date.
+     */
+    public boolean occursOn(LocalDate date) {
+        return false;
     }
 
     /**

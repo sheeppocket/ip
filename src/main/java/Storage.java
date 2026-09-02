@@ -72,11 +72,11 @@ public class Storage {
             }
             case "D" -> {
                 requireFieldCount(fields, 4);
-                yield new Deadline(fields[2], fields[3]);
+                yield new Deadline(fields[2], TaskDateTime.parse(fields[3]));
             }
             case "E" -> {
                 requireFieldCount(fields, 5);
-                yield new Event(fields[2], fields[3], fields[4]);
+                yield new Event(fields[2], TaskDateTime.parse(fields[3]), TaskDateTime.parse(fields[4]));
             }
             default -> throw new IllegalArgumentException("unknown task type");
             };
