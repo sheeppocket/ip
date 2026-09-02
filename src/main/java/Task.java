@@ -35,6 +35,15 @@ public class Task {
     }
 
     /**
+     * Returns the task in the format written to persistent storage.
+     *
+     * @return Pipe-separated task type, completion state, and description.
+     */
+    public String toDataString() {
+        return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Returns the task in the format used by the chatbot.
      *
      * @return Task status followed by its description.

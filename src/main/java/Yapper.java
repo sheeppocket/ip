@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -6,6 +8,8 @@ import java.util.Scanner;
  */
 public class Yapper {
     private static final String SEPARATOR = "____________________________________________________________";
+    private static final Path STORAGE_PATH = Path.of("data", "yapper.txt");
+
     public static void main(String[] args) {
         String banner = "__   __                               \n"
                 + "\\ \\ / /_ _ _ __  _ __   ___ _ __     \n"
@@ -21,7 +25,17 @@ public class Yapper {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage(STORAGE_PATH);
+        ArrayList<Task> tasks;
+        try {
+            tasks = storage.load();
+        } catch (IOException | YapperException exception) {
+            System.out.println(" WHOOPS-A-DAISY! Yapper could not load your saved tasks: "
+                    + exception.getMessage());
+            System.out.println(" Please repair or remove " + STORAGE_PATH + " before trying again.");
+            System.out.println(SEPARATOR);
+            return;
+        }
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine().trim();
@@ -34,18 +48,21 @@ public class Yapper {
                 switch (commandType) {
                 case LIST -> printTaskList(tasks);
                 case HELP -> printHelp();
-                case MARK -> markTask(command, tasks);
-                case UNMARK -> unmarkTask(command, tasks);
-                case DELETE -> deleteTask(command, tasks);
-                case TODO -> addTask(new Todo(getTaskDescription(command, "todo")), tasks);
-                case DEADLINE -> addTask(parseDeadline(command), tasks);
-                case EVENT -> addTask(parseEvent(command), tasks);
+                case MARK -> markTask(command, tasks, storage);
+                case UNMARK -> unmarkTask(command, tasks, storage);
+                case DELETE -> deleteTask(command, tasks, storage);
+                case TODO -> addTask(new Todo(getTaskDescription(command, "todo")), tasks, storage);
+                case DEADLINE -> addTask(parseDeadline(command), tasks, storage);
+                case EVENT -> addTask(parseEvent(command), tasks, storage);
                 case UNKNOWN -> throw new YapperException("Please precede a task with a command to add it. "
                         + "Otherwise, type 'help' for a list of commands.");
                 case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");
                 }
             } catch (YapperException exception) {
                 System.out.println(" WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: "
+                        + exception.getMessage());
+            } catch (IOException exception) {
+                System.out.println(" WHOOPS-A-DAISY! Yapper could not save your tasks: "
                         + exception.getMessage());
             }
             System.out.println(SEPARATOR);
@@ -83,31 +100,38 @@ public class Yapper {
     }
 
     /** Adds a task and prints Yapper's confirmation. */
-    private static void addTask(Task task, ArrayList<Task> tasks) {
+    private static void addTask(Task task, ArrayList<Task> tasks, Storage storage) throws IOException {
         tasks.add(task);
+        storage.save(tasks);
         printTaskAdded(task, tasks.size());
     }
 
     /** Marks the task selected by a mark command as completed. */
-    private static void markTask(String input, ArrayList<Task> tasks) throws YapperException {
+    private static void markTask(String input, ArrayList<Task> tasks, Storage storage)
+            throws YapperException, IOException {
         int taskIndex = parseTaskIndex(input, "mark", tasks.size());
         tasks.get(taskIndex).markAsDone();
+        storage.save(tasks);
         System.out.println(" CONFETTI CANNONS! This task is now officially, unmistakably, spectacularly DONE:");
         System.out.println("  " + tasks.get(taskIndex));
     }
 
     /** Marks the task selected by an unmark command as incomplete. */
-    private static void unmarkTask(String input, ArrayList<Task> tasks) throws YapperException {
+    private static void unmarkTask(String input, ArrayList<Task> tasks, Storage storage)
+            throws YapperException, IOException {
         int taskIndex = parseTaskIndex(input, "unmark", tasks.size());
         tasks.get(taskIndex).markAsNotDone();
+        storage.save(tasks);
         System.out.println(" PLOT TWIST! This task has returned to the thrilling realm of NOT DONE YET:");
         System.out.println("  " + tasks.get(taskIndex));
     }
 
     /** Removes the task selected by a delete command. */
-    private static void deleteTask(String input, ArrayList<Task> tasks) throws YapperException {
+    private static void deleteTask(String input, ArrayList<Task> tasks, Storage storage)
+            throws YapperException, IOException {
         int taskIndex = parseTaskIndex(input, "delete", tasks.size());
         Task removedTask = tasks.remove(taskIndex);
+        storage.save(tasks);
         printTaskDeleted(removedTask, tasks.size());
     }
 
