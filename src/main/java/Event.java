@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -25,6 +26,13 @@ public class Event extends Task {
         return "E | " + (isDone ? "1" : "0") + " | " + description
                 + " | " + TaskDateTime.formatForStorage(from)
                 + " | " + TaskDateTime.formatForStorage(to);
+    }
+
+    @Override
+    public boolean occursOn(LocalDate date) {
+        LocalDate startDate = from.toLocalDate();
+        LocalDate endDate = to.toLocalDate();
+        return !date.isBefore(startDate) && !date.isAfter(endDate);
     }
 
     @Override

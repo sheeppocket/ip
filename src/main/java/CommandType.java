@@ -14,6 +14,7 @@ public enum CommandType {
     TODO("todo", true),
     DEADLINE("deadline", true),
     EVENT("event", true),
+    ON("on", true),
     BYE("bye", false),
     UNKNOWN("", false);
 
