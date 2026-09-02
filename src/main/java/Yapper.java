@@ -176,7 +176,12 @@ public class Yapper {
         }
         String description = details.substring(0, bySeparator).trim();
         String by = details.substring(bySeparator + 5).trim();
-        return new Deadline(description, by);
+        try {
+            return new Deadline(description, TaskDateTime.parse(by));
+        } catch (IllegalArgumentException exception) {
+            throw new YapperException("Please use yyyy-MM-dd HHmm or d/M/yyyy HHmm for the deadline date."
+                    + " For example: deadline return book /by 2019-12-02 1800");
+        }
     }
 
     /** Parses an event command, including its required /from and /to values. */
@@ -191,7 +196,17 @@ public class Yapper {
         String description = details.substring(0, fromSeparator).trim();
         String from = details.substring(fromSeparator + 7, toSeparator).trim();
         String to = details.substring(toSeparator + 5).trim();
-        return new Event(description, from, to);
+        try {
+            java.time.LocalDateTime start = TaskDateTime.parse(from);
+            java.time.LocalDateTime end = TaskDateTime.parse(to);
+            if (end.isBefore(start)) {
+                throw new YapperException("The event end cannot be before its start.");
+            }
+            return new Event(description, start, end);
+        } catch (IllegalArgumentException exception) {
+            throw new YapperException("Please use yyyy-MM-dd HHmm or d/M/yyyy HHmm for event dates."
+                    + " For example: event workshop /from 2019-12-02 1400 /to 2019-12-02 1600");
+        }
     }
 
     /** Prints all tasks currently stored by the chatbot. */
@@ -206,8 +221,8 @@ public class Yapper {
     private static void printHelp() {
         System.out.println(" PREPARE YOURSELF! Here is Yapper's impressively comprehensive command repertoire:");
         System.out.println("  todo <description>");
-        System.out.println("  deadline <description> /by <date or time>");
-        System.out.println("  event <description> /from <start> /to <end>");
+        System.out.println("  deadline <description> /by <yyyy-MM-dd HHmm>");
+        System.out.println("  event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
         System.out.println("  list");
         System.out.println("  mark <task number>");
         System.out.println("  unmark <task number>");
