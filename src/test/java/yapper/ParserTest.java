@@ -7,7 +7,9 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests command recognition and validation at the user-input boundary. */
+/**
+ * Tests command recognition and validation at the user-input boundary.
+ */
 public class ParserTest {
     private final Parser parser = new Parser();
 
@@ -25,7 +27,7 @@ public class ParserTest {
 
     @Test
     public void parseCommandType_unknownWords_returnsUnknown() {
-        for (String input : new String[]{"", "TODO book", "todos book", "list extra", "bye now"}) {
+        for (String input : new String[] {"", "TODO book", "todos book", "list extra", "bye now"}) {
             assertEquals(CommandType.UNKNOWN, parser.parseCommandType(input), input);
         }
     }
@@ -48,7 +50,7 @@ public class ParserTest {
 
     @Test
     public void parseTaskIndex_invalidNumber_throwsException() {
-        for (String value : new String[]{"", "0", "-1", "4", "one", "1.5", "1 2", "2147483648"}) {
+        for (String value : new String[] {"", "0", "-1", "4", "one", "1.5", "1 2", "2147483648"}) {
             assertThrows(YapperException.class,
                     () -> parser.parseTaskIndex("mark " + value, "mark", 3), value);
         }
@@ -63,7 +65,7 @@ public class ParserTest {
 
     @Test
     public void parseDeadline_incompleteOrInvalid_throwsException() {
-        for (String input : new String[]{"deadline", "deadline book", "deadline /by 2024-02-29",
+        for (String input : new String[] {"deadline", "deadline book", "deadline /by 2024-02-29",
             "deadline book /by", "deadline book /by tomorrow", "deadline book /by 2023-02-29"}) {
             assertThrows(YapperException.class, () -> parser.parseDeadline(input), input);
         }
@@ -79,7 +81,7 @@ public class ParserTest {
 
     @Test
     public void parseEvent_incompleteOrInvalid_throwsException() {
-        for (String input : new String[]{"event", "event trip /from 2024-02-29",
+        for (String input : new String[] {"event", "event trip /from 2024-02-29",
             "event trip /to 2024-03-01", "event /from 2024-02-29 /to 2024-03-01",
             "event trip /from /to 2024-03-01", "event trip /from 2024-02-29 /to",
             "event trip /from tomorrow /to 2024-03-01",
@@ -97,7 +99,7 @@ public class ParserTest {
 
     @Test
     public void parseDate_missingOrInvalid_throwsException() {
-        for (String input : new String[]{"on", "on tomorrow", "on 2023-02-29", "on 2024-02-29 1800"}) {
+        for (String input : new String[] {"on", "on tomorrow", "on 2023-02-29", "on 2024-02-29 1800"}) {
             assertThrows(YapperException.class, () -> parser.parseDate(input), input);
         }
     }

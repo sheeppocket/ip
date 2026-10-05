@@ -77,19 +77,19 @@ public class Storage {
         String[] fields = line.split(" \\| ", -1);
         try {
             Task task = switch (fields[0]) {
-            case "T" -> {
-                requireFieldCount(fields, 3);
-                yield new Todo(fields[2]);
-            }
-            case "D" -> {
-                requireFieldCount(fields, 4);
-                yield new Deadline(fields[2], TaskDateTime.parse(fields[3]));
-            }
-            case "E" -> {
-                requireFieldCount(fields, 5);
-                yield new Event(fields[2], TaskDateTime.parse(fields[3]), TaskDateTime.parse(fields[4]));
-            }
-            default -> throw new IllegalArgumentException("unknown task type");
+                case "T" -> {
+                    requireFieldCount(fields, 3);
+                    yield new Todo(fields[2]);
+                }
+                case "D" -> {
+                    requireFieldCount(fields, 4);
+                    yield new Deadline(fields[2], TaskDateTime.parse(fields[3]));
+                }
+                case "E" -> {
+                    requireFieldCount(fields, 5);
+                    yield new Event(fields[2], TaskDateTime.parse(fields[3]), TaskDateTime.parse(fields[4]));
+                }
+                default -> throw new IllegalArgumentException("unknown task type");
             };
 
             if ("1".equals(fields[1])) {

@@ -10,7 +10,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests collection ownership, task updates, and date filtering. */
+/**
+ * Tests collection ownership, task updates, and date filtering.
+ */
 public class TaskListTest {
     @Test
     public void constructor_sourceListChanged_keepsIndependentStructure() {

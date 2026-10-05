@@ -9,12 +9,14 @@ import java.time.format.DateTimeFormatter;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests strict calendar parsing and the display and persistence formats. */
+/**
+ * Tests strict calendar parsing and the display and persistence formats.
+ */
 public class TaskDateTimeTest {
     @Test
     public void parse_supportedTimeFormats_returnsSameDateTime() {
         LocalDateTime expected = LocalDateTime.of(2024, 2, 29, 18, 30);
-        for (String value : new String[]{"2024-02-29 1830", "29/2/2024 1830", "2024-02-29T18:30:00"}) {
+        for (String value : new String[] {"2024-02-29 1830", "29/2/2024 1830", "2024-02-29T18:30:00"}) {
             assertEquals(expected, TaskDateTime.parse(value), value);
         }
     }
@@ -28,7 +30,7 @@ public class TaskDateTimeTest {
 
     @Test
     public void parse_invalidDatesAndTimes_rejectsInsteadOfNormalizing() {
-        for (String value : new String[]{"", "tomorrow", "2023-02-29", "31/4/2024", "2024-13-01",
+        for (String value : new String[] {"", "tomorrow", "2023-02-29", "31/4/2024", "2024-13-01",
             "2024-01-00", "2024-02-29 2400", "29/2/2024 1260", "2024-02-29 930"}) {
             assertThrows(IllegalArgumentException.class, () -> TaskDateTime.parse(value), value);
         }
@@ -43,7 +45,7 @@ public class TaskDateTimeTest {
 
     @Test
     public void parseDate_invalidOrContainsTime_throwsException() {
-        for (String value : new String[]{"", "2023-02-29", "31/4/2024", "2024-02-29T12:00:00"}) {
+        for (String value : new String[] {"", "2023-02-29", "31/4/2024", "2024-02-29T12:00:00"}) {
             assertThrows(IllegalArgumentException.class, () -> TaskDateTime.parseDate(value), value);
         }
     }

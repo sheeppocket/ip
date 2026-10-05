@@ -64,7 +64,8 @@ public class Ui {
      */
     public void showGoodbye() {
         System.out.println(" FAREWELL, magnificent human! Yapper shall now stop talking--an historic occasion!");
-        System.out.println(" Return soon, because your tasks and I will have an absolutely enormous amount to discuss.");
+        System.out.println(" Return soon, because your tasks and I will have an absolutely enormous"
+                + " amount to discuss.");
         System.out.println(SEPARATOR);
     }
 

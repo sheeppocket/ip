@@ -74,30 +74,30 @@ public class Yapper {
      */
     private void execute(CommandType commandType, String command) throws YapperException, IOException {
         switch (commandType) {
-        case LIST -> ui.printTaskList(tasks.asList());
-        case HELP -> ui.printHelp();
-        case MARK -> {
-            Task task = tasks.mark(parser.parseTaskIndex(command, "mark", tasks.size()));
-            storage.save(tasks.asList());
-            ui.showTaskStatus(task, true);
-        }
-        case UNMARK -> {
-            Task task = tasks.unmark(parser.parseTaskIndex(command, "unmark", tasks.size()));
-            storage.save(tasks.asList());
-            ui.showTaskStatus(task, false);
-        }
-        case DELETE -> {
-            Task task = tasks.delete(parser.parseTaskIndex(command, "delete", tasks.size()));
-            storage.save(tasks.asList());
-            ui.printTaskDeleted(task, tasks.size());
-        }
-        case TODO -> addTask(parser.parseTodo(command));
-        case DEADLINE -> addTask(parser.parseDeadline(command));
-        case EVENT -> addTask(parser.parseEvent(command));
-        case ON -> ui.printTasksOnDate(parser.parseDate(command), tasks);
-        case UNKNOWN -> throw new YapperException("Please precede a task with a command to add it. "
-                + "Otherwise, type 'help' for a list of commands.");
-        case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");
+            case LIST -> ui.printTaskList(tasks.asList());
+            case HELP -> ui.printHelp();
+            case MARK -> {
+                Task task = tasks.mark(parser.parseTaskIndex(command, "mark", tasks.size()));
+                storage.save(tasks.asList());
+                ui.showTaskStatus(task, true);
+            }
+            case UNMARK -> {
+                Task task = tasks.unmark(parser.parseTaskIndex(command, "unmark", tasks.size()));
+                storage.save(tasks.asList());
+                ui.showTaskStatus(task, false);
+            }
+            case DELETE -> {
+                Task task = tasks.delete(parser.parseTaskIndex(command, "delete", tasks.size()));
+                storage.save(tasks.asList());
+                ui.printTaskDeleted(task, tasks.size());
+            }
+            case TODO -> addTask(parser.parseTodo(command));
+            case DEADLINE -> addTask(parser.parseDeadline(command));
+            case EVENT -> addTask(parser.parseEvent(command));
+            case ON -> ui.printTasksOnDate(parser.parseDate(command), tasks);
+            case UNKNOWN -> throw new YapperException("Please precede a task with a command to add it. "
+                    + "Otherwise, type 'help' for a list of commands.");
+            case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");
         }
     }
 

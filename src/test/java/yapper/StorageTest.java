@@ -14,7 +14,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** Tests persistence using isolated files, including corrupt records and missing paths. */
+/**
+ * Tests persistence using isolated files, including corrupt records and missing paths.
+ */
 public class StorageTest {
     @TempDir
     Path temporaryDirectory;
