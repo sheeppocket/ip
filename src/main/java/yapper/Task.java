@@ -1,6 +1,7 @@
 package yapper;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 /**
  * Represents a task and whether it has been completed.
@@ -26,6 +27,16 @@ public class Task {
      */
     public String getStatusIcon() {
         return isDone ? "X" : " ";
+    }
+
+    /**
+     * Checks for a case-insensitive substring in the task description.
+     *
+     * @param keyword Nonempty search text validated by the parser.
+     * @return Whether the description contains the search text.
+     */
+    public boolean containsKeyword(String keyword) {
+        return description.toLowerCase(Locale.ROOT).contains(keyword.toLowerCase(Locale.ROOT));
     }
 
     /** Marks this task as completed. */

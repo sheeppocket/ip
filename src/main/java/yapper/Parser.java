@@ -2,6 +2,21 @@ package yapper;
 
 /** Interprets command words and validates their arguments before execution. */
 public class Parser {
+    /**
+     * Parses a nonempty keyword or phrase from a find command.
+     *
+     * @param input Find command supplied by the user.
+     * @return Search text with surrounding whitespace removed.
+     * @throws YapperException If the search text is empty.
+     */
+    public String parseKeyword(String input) throws YapperException {
+        String keyword = input.substring("find".length()).trim();
+        if (keyword.isEmpty()) {
+            throw new YapperException("Please specify a keyword. Try: find <keyword>");
+        }
+        return keyword;
+    }
+
     /** Identifies the command represented by trimmed user input. */
     public CommandType parseCommandType(String input) {
         return CommandType.from(input);

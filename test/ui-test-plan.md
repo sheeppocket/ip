@@ -333,6 +333,7 @@ help
   deadline <description> /by <yyyy-MM-dd HHmm>
   event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>
   on <yyyy-MM-dd>
+  find <keyword>
   list
   mark <task number>
   unmark <task number>
@@ -510,6 +511,191 @@ ____________________________________________________________
 ```
 
 #### Command 9
+
+**Input**
+
+```text
+bye
+```
+
+**Expected output**
+
+```text
+ FAREWELL, magnificent human! Yapper shall now stop talking--an historic occasion!
+ Return soon, because your tasks and I will have an absolutely enormous amount to discuss.
+____________________________________________________________
+```
+
+### UI-4: Keyword search preserves original task numbers and state
+
+**Aim:** Verify empty-list, case-insensitive, phrase, no-match and missing-keyword searches without changing task order or completion state.
+
+#### Command 1
+
+**Input**
+
+```text
+find book
+```
+
+**Expected output**
+
+```text
+ HERE ARE YOUR MATCHING TASKS:
+ No matching tasks found. Try another keyword!
+____________________________________________________________
+```
+
+#### Command 2
+
+**Input**
+
+```text
+todo laundry
+```
+
+**Expected output**
+
+```text
+ OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:
+   [T][ ] laundry
+ Your legendary list now contains 1 task(s). Yes, I counted them personally!
+____________________________________________________________
+```
+
+#### Command 3
+
+**Input**
+
+```text
+todo read book
+```
+
+**Expected output**
+
+```text
+ OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:
+   [T][ ] read book
+ Your legendary list now contains 2 task(s). Yes, I counted them personally!
+____________________________________________________________
+```
+
+#### Command 4
+
+**Input**
+
+```text
+deadline return book /by 2024-02-29 1800
+```
+
+**Expected output**
+
+```text
+ OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:
+   [D][ ] return book (by: Feb 29 2024, 6:00PM)
+ Your legendary list now contains 3 task(s). Yes, I counted them personally!
+____________________________________________________________
+```
+
+#### Command 5
+
+**Input**
+
+```text
+mark 3
+```
+
+**Expected output**
+
+```text
+ CONFETTI CANNONS! This task is now officially, unmistakably, spectacularly DONE:
+  [D][X] return book (by: Feb 29 2024, 6:00PM)
+____________________________________________________________
+```
+
+#### Command 6
+
+**Input**
+
+```text
+find BOOK
+```
+
+**Expected output**
+
+```text
+ HERE ARE YOUR MATCHING TASKS:
+ 2.[T][ ] read book
+ 3.[D][X] return book (by: Feb 29 2024, 6:00PM)
+____________________________________________________________
+```
+
+#### Command 7
+
+**Input**
+
+```text
+find missing
+```
+
+**Expected output**
+
+```text
+ HERE ARE YOUR MATCHING TASKS:
+ No matching tasks found. Try another keyword!
+____________________________________________________________
+```
+
+#### Command 8
+
+**Input**
+
+```text
+find
+```
+
+**Expected output**
+
+```text
+ WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: Please specify a keyword. Try: find <keyword>
+____________________________________________________________
+```
+
+#### Command 9
+
+**Input**
+
+```text
+find return book
+```
+
+**Expected output**
+
+```text
+ HERE ARE YOUR MATCHING TASKS:
+ 3.[D][X] return book (by: Feb 29 2024, 6:00PM)
+____________________________________________________________
+```
+
+#### Command 10
+
+**Input**
+
+```text
+list
+```
+
+**Expected output**
+
+```text
+ ATTENTION, EVERYONE! Yapper proudly presents your complete and glorious task list:
+ 1.[T][ ] laundry
+ 2.[T][ ] read book
+ 3.[D][X] return book (by: Feb 29 2024, 6:00PM)
+____________________________________________________________
+```
+
+#### Command 11
 
 **Input**
 
