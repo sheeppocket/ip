@@ -10,7 +10,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests keyword parsing and read-only searches across task types. */
+/**
+ * Tests keyword parsing and read-only searches across task types.
+ */
 public class FindTest {
     @Test
     public void parseKeyword_paddedPhrase_preservesInnerSpaces() throws YapperException {

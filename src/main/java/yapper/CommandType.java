@@ -17,6 +17,7 @@ public enum CommandType {
     DEADLINE("deadline", true),
     EVENT("event", true),
     ON("on", true),
+    /** Searches for a keyword in task descriptions. */
     FIND("find", true),
     BYE("bye", false),
     UNKNOWN("", false);
