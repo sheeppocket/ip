@@ -42,18 +42,13 @@ which the wrapper checks when downloading the distribution.
 
 ## Increment integration
 
-This build targets the A-Packages result. Until that increment is integrated,
-`clean build` can compile the existing default-package sources, but normal `run`
-requires the package change. The Gradle increment was smoke-tested using an
-ignored init script that temporarily set the `run` task's `mainClass` to `Yapper`
-and its working directory to `.gradle/smoke-run`. Production sources were not moved
-or edited. Repeat ordinary `run` after integrating A-Packages.
+The course `add-gradle-support` branch is merged into this increment. Its starter
+entry point and build defaults are adapted to Yapper: the reviewed Gradle 9.1.0
+wrapper, Java 25 toolchain, and Jupiter 5.13.4 configuration are retained.
+The application plugin also applies Java support. The Unix wrapper is executable.
 
+A-Packages is integrated, so ordinary `run` launches `yapper.Yapper` directly.
 No tests exist in this increment: `test NO-SOURCE` does not establish test coverage.
 Integrate A-JUnit and rerun `test` to validate those tests. Executable JAR
-configuration belongs to the separate A-Jar increment.
-
-The [course A-Gradle instructions](https://nus-cs2103-ay2627-s1.github.io/website/admin/ip-w3.html)
-also specify merging the `add-gradle-support` branch. No merge, commit, or tag was
-performed because this implementation assignment explicitly defers those actions.
-The eventual milestone is the lightweight tag `A-Gradle`.
+configuration belongs to the separate A-Jar increment; this build does not need
+the starter Shadow plugin because the application has no runtime dependencies.
