@@ -1,3 +1,5 @@
+package yapper;
+
 /** Interprets command words and validates their arguments before execution. */
 public class Parser {
     /** Identifies the command represented by trimmed user input. */
