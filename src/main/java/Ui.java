@@ -3,27 +3,37 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-/** Reads console input and displays Yapper's messages and task listings. */
+/**
+ * Reads console input and displays Yapper's messages and task listings.
+ */
 public class Ui {
     private static final String SEPARATOR = "____________________________________________________________";
     private final Scanner scanner = new Scanner(System.in);
 
-    /** Returns whether another command is available, including piped input. */
+    /**
+     * Returns whether another command is available, including piped input.
+     */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
     }
 
-    /** Reads and trims the next command. */
+    /**
+     * Reads and trims the next command.
+     */
     public String readCommand() {
         return scanner.nextLine().trim();
     }
 
-    /** Separates responses visually. */
+    /**
+     * Separates responses visually.
+     */
     public void showSeparator() {
         System.out.println(SEPARATOR);
     }
 
-    /** Displays the banner and greeting. */
+    /**
+     * Displays the banner and greeting.
+     */
     public void showWelcome() {
         String banner = "__   __                               \n"
                 + "\\ \\ / /_ _ _ __  _ __   ___ _ __     \n"
@@ -40,10 +50,13 @@ public class Ui {
 
     }
 
-    /** Displays the farewell on exit or end of input. */
+    /**
+     * Displays the farewell on exit or end of input.
+     */
     public void showGoodbye() {
         System.out.println(" FAREWELL, magnificent human! Yapper shall now stop talking--an historic occasion!");
-        System.out.println(" Return soon, because your tasks and I will have an absolutely enormous amount to discuss.");
+        System.out.println(" Return soon, because your tasks and I will have an absolutely enormous"
+                + " amount to discuss.");
         System.out.println(SEPARATOR);
     }
 
@@ -73,7 +86,9 @@ public class Ui {
                 + " task(s). Delightfully tidy!");
     }
 
-    /** Prints all tasks currently stored by the chatbot. */
+    /**
+     * Prints all tasks currently stored by the chatbot.
+     */
     public void printTaskList(List<Task> tasks) {
         System.out.println(" ATTENTION, EVERYONE! Yapper proudly presents your complete and glorious task list:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -81,7 +96,9 @@ public class Ui {
         }
     }
 
-    /** Prints the running list of commands supported by the chatbot. */
+    /**
+     * Prints the running list of commands supported by the chatbot.
+     */
     public void printHelp() {
         System.out.println(" PREPARE YOURSELF! Here is Yapper's impressively comprehensive command repertoire:");
         System.out.println("  todo <description>");
@@ -96,24 +113,32 @@ public class Ui {
         System.out.println("  bye");
     }
 
-    /** Displays a command validation error. */
+    /**
+     * Displays a command validation error.
+     */
     public void showError(String message) {
         System.out.println(" WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: " + message);
     }
 
-    /** Explains why startup stopped without overwriting unreadable data. */
+    /**
+     * Explains why startup stopped without overwriting unreadable data.
+     */
     public void showLoadingError(String message, Path path) {
         System.out.println(" WHOOPS-A-DAISY! Yapper could not load your saved tasks: " + message);
         System.out.println(" Please repair or remove " + path + " before trying again.");
         showSeparator();
     }
 
-    /** Reports a failure to persist a task change. */
+    /**
+     * Reports a failure to persist a task change.
+     */
     public void showSavingError(String message) {
         System.out.println(" WHOOPS-A-DAISY! Yapper could not save your tasks: " + message);
     }
 
-    /** Confirms the task's new completion state. */
+    /**
+     * Confirms the task's new completion state.
+     */
     public void showTaskStatus(Task task, boolean isDone) {
         if (isDone) {
             System.out.println(" CONFETTI CANNONS! This task is now officially, unmistakably, spectacularly DONE:");
@@ -123,7 +148,9 @@ public class Ui {
         System.out.println("  " + task);
     }
 
-    /** Displays date matches with their original task numbers. */
+    /**
+     * Displays date matches with their original task numbers.
+     */
     public void printTasksOnDate(LocalDate date, TaskList tasks) {
         System.out.println(" HERE ARE YOUR SCHEDULED TASKS ON "
                 + date.format(java.time.format.DateTimeFormatter.ofPattern("MMM d uuuu")) + ":");

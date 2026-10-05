@@ -26,12 +26,16 @@ public class Task {
         return isDone ? "X" : " ";
     }
 
-    /** Marks this task as completed. */
+    /**
+     * Marks this task as completed.
+     */
     public void markAsDone() {
         isDone = true;
     }
 
-    /** Marks this task as incomplete. */
+    /**
+     * Marks this task as incomplete.
+     */
     public void markAsNotDone() {
         isDone = false;
     }

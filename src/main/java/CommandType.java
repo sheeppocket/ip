@@ -41,7 +41,9 @@ public enum CommandType {
         return UNKNOWN;
     }
 
-    /** Returns whether the input begins with this complete command word. */
+    /**
+     * Returns whether the input begins with this complete command word.
+     */
     private boolean matches(String input) {
         return input.equals(keyword) || acceptsArguments && input.startsWith(keyword + " ");
     }

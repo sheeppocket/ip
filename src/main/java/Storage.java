@@ -61,24 +61,26 @@ public class Storage {
         Files.write(filePath, lines);
     }
 
-    /** Reconstructs one task from its pipe-separated storage representation. */
+    /**
+     * Reconstructs one task from its pipe-separated storage representation.
+     */
     private Task parseTask(String line, int lineNumber) throws YapperException {
         String[] fields = line.split(" \\| ", -1);
         try {
             Task task = switch (fields[0]) {
-            case "T" -> {
-                requireFieldCount(fields, 3);
-                yield new Todo(fields[2]);
-            }
-            case "D" -> {
-                requireFieldCount(fields, 4);
-                yield new Deadline(fields[2], TaskDateTime.parse(fields[3]));
-            }
-            case "E" -> {
-                requireFieldCount(fields, 5);
-                yield new Event(fields[2], TaskDateTime.parse(fields[3]), TaskDateTime.parse(fields[4]));
-            }
-            default -> throw new IllegalArgumentException("unknown task type");
+                case "T" -> {
+                    requireFieldCount(fields, 3);
+                    yield new Todo(fields[2]);
+                }
+                case "D" -> {
+                    requireFieldCount(fields, 4);
+                    yield new Deadline(fields[2], TaskDateTime.parse(fields[3]));
+                }
+                case "E" -> {
+                    requireFieldCount(fields, 5);
+                    yield new Event(fields[2], TaskDateTime.parse(fields[3]), TaskDateTime.parse(fields[4]));
+                }
+                default -> throw new IllegalArgumentException("unknown task type");
             };
 
             if ("1".equals(fields[1])) {
@@ -93,7 +95,9 @@ public class Storage {
         }
     }
 
-    /** Ensures a stored task contains exactly the fields required by its type. */
+    /**
+     * Ensures a stored task contains exactly the fields required by its type.
+     */
     private void requireFieldCount(String[] fields, int expectedCount) {
         if (fields.length != expectedCount) {
             throw new IllegalArgumentException("wrong number of fields");

@@ -67,7 +67,9 @@ public final class TaskDateTime {
         throw new IllegalArgumentException("invalid date");
     }
 
-    /** Returns a friendly representation suitable for chatbot output. */
+    /**
+     * Returns a friendly representation suitable for chatbot output.
+     */
     public static String formatForDisplay(LocalDateTime dateTime) {
         if (dateTime.toLocalTime().equals(java.time.LocalTime.MIDNIGHT)) {
             return dateTime.format(DISPLAY_DATE);
@@ -75,7 +77,9 @@ public final class TaskDateTime {
         return dateTime.format(DISPLAY_DATE_TIME);
     }
 
-    /** Returns the stable ISO representation used in the save file. */
+    /**
+     * Returns the stable ISO representation used in the save file.
+     */
     public static String formatForStorage(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }

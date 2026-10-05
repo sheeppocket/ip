@@ -1,16 +1,24 @@
-/** Interprets command words and validates their arguments before execution. */
+/**
+ * Interprets command words and validates their arguments before execution.
+ */
 public class Parser {
-    /** Identifies the command represented by trimmed user input. */
+    /**
+     * Identifies the command represented by trimmed user input.
+     */
     public CommandType parseCommandType(String input) {
         return CommandType.from(input);
     }
 
-    /** Creates a todo from its command, rejecting an empty description. */
+    /**
+     * Creates a todo from its command, rejecting an empty description.
+     */
     public Todo parseTodo(String input) throws YapperException {
         return new Todo(getTaskDescription(input, "todo"));
     }
 
-    /** Extracts and validates a task description following a command word. */
+    /**
+     * Extracts and validates a task description following a command word.
+     */
     private String getTaskDescription(String input, String command) throws YapperException {
         String description = input.substring(command.length()).trim();
         if (description.isEmpty()) {
@@ -20,7 +28,9 @@ public class Parser {
         return description;
     }
 
-    /** Parses and validates the task number supplied to a task-index command. */
+    /**
+     * Parses and validates the task number supplied to a task-index command.
+     */
     public int parseTaskIndex(String input, String command, int taskCount)
             throws YapperException {
         String indexText = input.substring(command.length()).trim();
@@ -41,7 +51,9 @@ public class Parser {
         }
     }
 
-    /** Parses a deadline command, including its required /by value. */
+    /**
+     * Parses a deadline command, including its required /by value.
+     */
     public Deadline parseDeadline(String input) throws YapperException {
         String details = getTaskDescription(input, "deadline");
         int bySeparator = details.indexOf(" /by ");
@@ -59,7 +71,9 @@ public class Parser {
         }
     }
 
-    /** Parses an event command, including its required /from and /to values. */
+    /**
+     * Parses an event command, including its required /from and /to values.
+     */
     public Event parseEvent(String input) throws YapperException {
         String details = getTaskDescription(input, "event");
         int fromSeparator = details.indexOf(" /from ");
@@ -84,7 +98,9 @@ public class Parser {
         }
     }
 
-    /** Parses the date argument of an on command. */
+    /**
+     * Parses the date argument of an on command.
+     */
     public java.time.LocalDate parseDate(String input) throws YapperException {
         String dateText = input.substring("on".length()).trim();
         if (dateText.isEmpty()) {
