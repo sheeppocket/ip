@@ -1,17 +1,29 @@
 import java.io.IOException;
 import java.nio.file.Path;
 
-/** Coordinates command parsing, task operations, persistence, and the console UI. */
+/**
+ * Coordinates command parsing, task operations, persistence, and the console UI.
+ */
 public class Yapper {
+    /** Default save file relative to the working directory. */
     private static final Path STORAGE_PATH = Path.of("data", "yapper.txt");
 
+    /** Console input and output handler. */
     private final Ui ui;
+    /** Command and argument parser. */
     private final Parser parser;
+    /** Persistence handler for the configured save file. */
     private final Storage storage;
+    /** Save file path included in startup error messages. */
     private final Path storagePath;
+    /** Working task list, initialized after a successful load. */
     private TaskList tasks;
 
-    /** Creates an application that stores tasks at the supplied path. */
+    /**
+     * Creates an application that stores tasks at the supplied path.
+     *
+     * @param storagePath File used to load and save tasks.
+     */
     public Yapper(Path storagePath) {
         this.storagePath = storagePath;
         ui = new Ui();
@@ -19,7 +31,9 @@ public class Yapper {
         storage = new Storage(storagePath);
     }
 
-    /** Loads saved tasks and processes commands until bye or the end of input. */
+    /**
+     * Loads saved tasks and processes commands until bye or the end of input.
+     */
     public void run() {
         ui.showWelcome();
         try {
@@ -47,7 +61,15 @@ public class Yapper {
         ui.showGoodbye();
     }
 
-    /** Dispatches one command, saving changes before displaying their confirmation. */
+    /**
+     * Dispatches one command, saving changes before displaying their confirmation.
+     *
+     * @param commandType Recognized command type.
+     * @param command Trimmed command line including its arguments.
+     * @throws YapperException If the command or its arguments are invalid.
+     * @throws IOException If saving fails; the in-memory change is not rolled back.
+     * @throws AssertionError If BYE reaches dispatch instead of being handled by the input loop.
+     */
     private void execute(CommandType commandType, String command) throws YapperException, IOException {
         switch (commandType) {
         case LIST -> ui.printTaskList(tasks.asList());
@@ -77,14 +99,23 @@ public class Yapper {
         }
     }
 
-    /** Adds and persists a parsed task before showing its confirmation. */
+    /**
+     * Adds and persists a parsed task before showing its confirmation.
+     *
+     * @param task Parsed task to append.
+     * @throws IOException If saving fails; the task remains in memory.
+     */
     private void addTask(Task task) throws IOException {
         tasks.add(task);
         storage.save(tasks.asList());
         ui.printTaskAdded(task, tasks.size());
     }
 
-    /** Starts Yapper using its default relative storage path. */
+    /**
+     * Starts Yapper using its default relative storage path.
+     *
+     * @param args Command-line arguments; not used.
+     */
     public static void main(String[] args) {
         new Yapper(STORAGE_PATH).run();
     }

@@ -1,5 +1,5 @@
 /**
- * Represents an error caused by an invalid command entered by the user.
+ * Represents a user-facing error caused by an invalid command or saved task record.
  */
 public class YapperException extends Exception {
     /**

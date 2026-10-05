@@ -2,60 +2,110 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Owns the task collection and operations on tasks, independently of input and storage. */
+/**
+ * Owns the task collection and operations on tasks, independently of input and storage.
+ */
 public class TaskList {
+    /** Mutable task collection in display and storage order. */
     private final List<Task> tasks;
 
-    /** Creates an empty task list. */
+    /**
+     * Creates an empty task list.
+     */
     public TaskList() {
         this(List.of());
     }
 
-    /** Copies loaded tasks so callers cannot add or remove entries through the original list. */
+    /**
+     * Copies loaded tasks so callers cannot add or remove entries through the original list.
+     *
+     * @param tasks Initial tasks; the task objects themselves remain shared.
+     */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
     }
 
-    /** Adds a task to the end of the list. */
+    /**
+     * Adds a task to the end of the list.
+     *
+     * @param task Task to append.
+     */
     public void add(Task task) {
         tasks.add(task);
     }
 
-    /** Removes and returns the task at a validated zero-based index. */
+    /**
+     * Removes and returns the task at a validated zero-based index.
+     *
+     * @param index Zero-based task index.
+     * @return Removed task.
+     * @throws IndexOutOfBoundsException If the index is outside the list.
+     */
     public Task delete(int index) {
         return tasks.remove(index);
     }
 
-    /** Marks a task at a validated zero-based index as completed. */
+    /**
+     * Marks a task at a validated zero-based index as completed.
+     *
+     * @param index Zero-based task index.
+     * @return Task after marking it completed.
+     * @throws IndexOutOfBoundsException If the index is outside the list.
+     */
     public Task mark(int index) {
         Task task = get(index);
         task.markAsDone();
         return task;
     }
 
-    /** Marks a task at a validated zero-based index as incomplete. */
+    /**
+     * Marks a task at a validated zero-based index as incomplete.
+     *
+     * @param index Zero-based task index.
+     * @return Task after marking it incomplete.
+     * @throws IndexOutOfBoundsException If the index is outside the list.
+     */
     public Task unmark(int index) {
         Task task = get(index);
         task.markAsNotDone();
         return task;
     }
 
-    /** Returns a task at a validated zero-based index. */
+    /**
+     * Returns a task at a validated zero-based index.
+     *
+     * @param index Zero-based task index.
+     * @return Task at that index.
+     * @throws IndexOutOfBoundsException If the index is outside the list.
+     */
     public Task get(int index) {
         return tasks.get(index);
     }
 
-    /** Returns the number of tasks. */
+    /**
+     * Returns the number of tasks.
+     *
+     * @return Current task count.
+     */
     public int size() {
         return tasks.size();
     }
 
-    /** Returns a structurally immutable snapshot for display or saving; task objects are shared. */
+    /**
+     * Returns a structurally immutable snapshot for display or saving; task objects are shared.
+     *
+     * @return Unmodifiable copy of the list containing the same mutable task objects.
+     */
     public List<Task> asList() {
         return List.copyOf(tasks);
     }
 
-    /** Finds zero-based indices of scheduled tasks, preserving their original list numbers. */
+    /**
+     * Finds zero-based indices of scheduled tasks, preserving their original list numbers.
+     *
+     * @param date Calendar date to match.
+     * @return Matching indices in list order; empty when no tasks occur on the date.
+     */
     public List<Integer> indicesOn(LocalDate date) {
         List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {

@@ -8,8 +8,10 @@ import java.util.List;
  * Saves tasks to disk and restores them when Yapper starts again.
  */
 public class Storage {
+    /** Delimiter describing the pipe-separated storage format. */
     private static final String FIELD_SEPARATOR = " | ";
 
+    /** File from which tasks are loaded and to which they are saved. */
     private final Path filePath;
 
     /**
@@ -61,7 +63,14 @@ public class Storage {
         Files.write(filePath, lines);
     }
 
-    /** Reconstructs one task from its pipe-separated storage representation. */
+    /**
+     * Reconstructs one task from its pipe-separated storage representation.
+     *
+     * @param line Saved task record.
+     * @param lineNumber One-based file line number for error reporting.
+     * @return Task with its saved completion state restored.
+     * @throws YapperException If the type, field count, completion state, or date is invalid.
+     */
     private Task parseTask(String line, int lineNumber) throws YapperException {
         String[] fields = line.split(" \\| ", -1);
         try {
@@ -93,7 +102,13 @@ public class Storage {
         }
     }
 
-    /** Ensures a stored task contains exactly the fields required by its type. */
+    /**
+     * Ensures a stored task contains exactly the fields required by its type.
+     *
+     * @param fields Fields in a saved record.
+     * @param expectedCount Required number of fields.
+     * @throws IllegalArgumentException If the number of fields differs.
+     */
     private void requireFieldCount(String[] fields, int expectedCount) {
         if (fields.length != expectedCount) {
             throw new IllegalArgumentException("wrong number of fields");

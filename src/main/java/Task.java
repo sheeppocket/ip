@@ -4,7 +4,9 @@ import java.time.LocalDate;
  * Represents a task and whether it has been completed.
  */
 public class Task {
+    /** Text describing the task. */
     protected String description;
+    /** Whether the task has been marked completed. */
     protected boolean isDone;
 
     /**
@@ -26,12 +28,16 @@ public class Task {
         return isDone ? "X" : " ";
     }
 
-    /** Marks this task as completed. */
+    /**
+     * Marks this task as completed.
+     */
     public void markAsDone() {
         isDone = true;
     }
 
-    /** Marks this task as incomplete. */
+    /**
+     * Marks this task as incomplete.
+     */
     public void markAsNotDone() {
         isDone = false;
     }

@@ -1,16 +1,36 @@
-/** Interprets command words and validates their arguments before execution. */
+/**
+ * Interprets command words and validates their arguments before execution.
+ */
 public class Parser {
-    /** Identifies the command represented by trimmed user input. */
+    /**
+     * Identifies the command represented by trimmed user input.
+     *
+     * @param input Trimmed command line.
+     * @return Matching command type, or UNKNOWN when no command matches.
+     */
     public CommandType parseCommandType(String input) {
         return CommandType.from(input);
     }
 
-    /** Creates a todo from its command, rejecting an empty description. */
+    /**
+     * Creates a todo from its command, rejecting an empty description.
+     *
+     * @param input Command line beginning with {@code todo}.
+     * @return New incomplete todo.
+     * @throws YapperException If the description is empty.
+     */
     public Todo parseTodo(String input) throws YapperException {
         return new Todo(getTaskDescription(input, "todo"));
     }
 
-    /** Extracts and validates a task description following a command word. */
+    /**
+     * Extracts and validates a task description following a command word.
+     *
+     * @param input Command line beginning with the supplied command word.
+     * @param command Command word to remove.
+     * @return Trimmed, nonempty description.
+     * @throws YapperException If no description follows the command.
+     */
     private String getTaskDescription(String input, String command) throws YapperException {
         String description = input.substring(command.length()).trim();
         if (description.isEmpty()) {
@@ -20,7 +40,15 @@ public class Parser {
         return description;
     }
 
-    /** Parses and validates the task number supplied to a task-index command. */
+    /**
+     * Parses and validates the task number supplied to a task-index command.
+     *
+     * @param input Command line beginning with the supplied command word.
+     * @param command Command word to remove.
+     * @param taskCount Number of tasks available for selection.
+     * @return Zero-based index corresponding to the one-based task number.
+     * @throws YapperException If the number is missing, nonnumeric, or outside the list.
+     */
     public int parseTaskIndex(String input, String command, int taskCount)
             throws YapperException {
         String indexText = input.substring(command.length()).trim();
@@ -41,7 +69,14 @@ public class Parser {
         }
     }
 
-    /** Parses a deadline command, including its required /by value. */
+    /**
+     * Parses a deadline command, including its required /by value.
+     *
+     * @param input Command line beginning with {@code deadline}.
+     * @return New incomplete deadline.
+     * @throws YapperException If the description, separator, or supported due date is missing or invalid.
+     * @see TaskDateTime#parse(String)
+     */
     public Deadline parseDeadline(String input) throws YapperException {
         String details = getTaskDescription(input, "deadline");
         int bySeparator = details.indexOf(" /by ");
@@ -59,7 +94,14 @@ public class Parser {
         }
     }
 
-    /** Parses an event command, including its required /from and /to values. */
+    /**
+     * Parses an event command, including its required /from and /to values.
+     *
+     * @param input Command line beginning with {@code event}.
+     * @return New incomplete event; equal start and end times are allowed.
+     * @throws YapperException If required fields are missing, dates are invalid, or the end precedes the start.
+     * @see TaskDateTime#parse(String)
+     */
     public Event parseEvent(String input) throws YapperException {
         String details = getTaskDescription(input, "event");
         int fromSeparator = details.indexOf(" /from ");
@@ -84,7 +126,13 @@ public class Parser {
         }
     }
 
-    /** Parses the date argument of an on command. */
+    /**
+     * Parses the date argument of an on command.
+     *
+     * @param input Command line beginning with {@code on}.
+     * @return Calendar date to search.
+     * @throws YapperException If the date is missing or is not in a supported date-only format.
+     */
     public java.time.LocalDate parseDate(String input) throws YapperException {
         String dateText = input.substring("on".length()).trim();
         if (dateText.isEmpty()) {
