@@ -1,0 +1,7 @@
+// Apply after the Java plugin; Yapper has no third-party runtime dependencies.
+tasks.named('jar', org.gradle.api.tasks.bundling.Jar) {
+    archiveFileName = 'yapper.jar'
+    manifest {
+        attributes('Main-Class': 'yapper.Yapper')
+    }
+}
