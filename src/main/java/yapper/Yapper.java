@@ -95,6 +95,7 @@ public class Yapper {
             case DEADLINE -> addTask(parser.parseDeadline(command));
             case EVENT -> addTask(parser.parseEvent(command));
             case ON -> ui.printTasksOnDate(parser.parseDate(command), tasks);
+            case FIND -> ui.printMatchingTasks(parser.parseKeyword(command), tasks);
             case UNKNOWN -> throw new YapperException("Please precede a task with a command to add it. "
                     + "Otherwise, type 'help' for a list of commands.");
             case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");

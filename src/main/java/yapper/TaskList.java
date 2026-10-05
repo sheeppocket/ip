@@ -103,6 +103,22 @@ public class TaskList {
     }
 
     /**
+     * Finds matching descriptions without changing the task list.
+     *
+     * @param keyword Nonempty search text validated by the parser.
+     * @return Matching zero-based indices in their original order.
+     */
+    public List<Integer> indicesMatching(String keyword) {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).containsKeyword(keyword)) {
+                indices.add(i);
+            }
+        }
+        return indices;
+    }
+
+    /**
      * Finds zero-based indices of scheduled tasks, preserving their original list numbers.
      *
      * @param date Calendar date to match.

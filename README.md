@@ -37,3 +37,13 @@ java -cp out yapper.Yapper
 All production classes belong to the `yapper` package under the `src/main/java`
 source root. Classes in this package can refer to each other without imports.
 Yapper stores tasks in `data/yapper.txt` relative to the directory you run it from.
+
+For automated builds and tests, see [the Gradle instructions](docs/gradle.md).
+To build and run a standalone executable, see [the JAR instructions](docs/jar.md).
+
+## Finding tasks
+
+Use `find <keyword>` to search task descriptions. Matching ignores letter case
+and accepts a substring or phrase, such as `find book` or `find return book`.
+Results keep their original task numbers so `mark`, `unmark`, and `delete`
+continue to refer to the same tasks. Searching does not change the saved list.

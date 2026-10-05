@@ -116,6 +116,7 @@ public class Ui {
         System.out.println("  deadline <description> /by <yyyy-MM-dd HHmm>");
         System.out.println("  event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
         System.out.println("  on <yyyy-MM-dd>");
+        System.out.println("  find <keyword>");
         System.out.println("  list");
         System.out.println("  mark <task number>");
         System.out.println("  unmark <task number>");
@@ -131,6 +132,23 @@ public class Ui {
      */
     public void showError(String message) {
         System.out.println(" WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: " + message);
+    }
+
+    /**
+     * Displays search matches using original task numbers for later commands.
+     *
+     * @param keyword Nonempty search text validated by the parser.
+     * @param tasks Task list to search without modifying it.
+     */
+    public void printMatchingTasks(String keyword, TaskList tasks) {
+        System.out.println(" HERE ARE YOUR MATCHING TASKS:");
+        List<Integer> indices = tasks.indicesMatching(keyword);
+        for (int index : indices) {
+            System.out.println(" " + (index + 1) + "." + tasks.get(index));
+        }
+        if (indices.isEmpty()) {
+            System.out.println(" No matching tasks found. Try another keyword!");
+        }
     }
 
     /**

@@ -48,7 +48,9 @@ wrapper, Java 25 toolchain, and Jupiter 5.13.4 configuration are retained.
 The application plugin also applies Java support. The Unix wrapper is executable.
 
 A-Packages is integrated, so ordinary `run` launches `yapper.Yapper` directly.
-No tests exist in this increment: `test NO-SOURCE` does not establish test coverage.
-Integrate A-JUnit and rerun `test` to validate those tests. Executable JAR
-configuration belongs to the separate A-Jar increment; this build does not need
-the starter Shadow plugin because the application has no runtime dependencies.
+The `test` task runs the JUnit tests under `src/test/java/yapper`, including
+keyword search, parsing, dates, task-list operations, and persistence.
+The A-Jar configuration is applied from `gradle/jar.gradle`; `jar` creates
+`build/libs/yapper.jar`. See [JAR instructions](jar.md) for distribution and
+execution. This build does not need the starter Shadow plugin because the
+application has no runtime dependencies.

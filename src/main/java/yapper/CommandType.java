@@ -26,6 +26,8 @@ public enum CommandType {
     EVENT("event", true),
     /** Lists tasks scheduled on a calendar date. */
     ON("on", true),
+    /** Searches for a keyword in task descriptions. */
+    FIND("find", true),
     /** Ends the command loop. */
     BYE("bye", false),
     /** Represents input that does not match a supported command. */
