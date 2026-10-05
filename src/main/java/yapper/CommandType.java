@@ -1,3 +1,5 @@
+package yapper;
+
 /**
  * Represents the commands understood by Yapper.
  *

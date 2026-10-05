@@ -6,7 +6,7 @@
 - Java version: 25
 - Source directory: `src/main/java`
 - Generated class directory: `build/ui-test-classes`
-- Launch command: `java -cp build/ui-test-classes Yapper`
+- Launch command: `java -cp build/ui-test-classes yapper.Yapper`
 - Response timeout: 5 seconds per command
 - Comparison: Exact text after normalizing line endings to `LF`; whitespace, blank lines, punctuation, and separators remain significant.
 - Isolation: Start a fresh application process for each test case.
@@ -206,7 +206,7 @@ ____________________________________________________________
 
 ### UI-2: Malformed dated tasks preserve state
 
-**Aim:** Verify malformed deadlines and events are rejected without being added, while valid dated tasks and arbitrary date strings remain usable.
+**Aim:** Verify malformed deadlines and events are rejected without being added, while valid dated tasks remain usable and unsupported date strings are rejected.
 
 #### Command 1
 
@@ -243,18 +243,32 @@ ____________________________________________________________
 **Input**
 
 ```text
-deadline submit report /by no idea :-p
+deadline submit report /by 2019-12-02 1800
 ```
 
 **Expected output**
 
 ```text
  OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:
-   [D][ ] submit report (by: no idea :-p)
+   [D][ ] submit report (by: Dec 2 2019, 6:00PM)
  Your legendary list now contains 1 task(s). Yes, I counted them personally!
 ____________________________________________________________
 ```
 
+#### Command 3a
+
+**Input**
+
+```text
+deadline invalid date /by no idea :-p
+```
+
+**Expected output**
+
+```text
+ WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: Please use yyyy-MM-dd HHmm or d/M/yyyy HHmm for the deadline date. For example: deadline return book /by 2019-12-02 1800
+____________________________________________________________
+```
 #### Command 4
 
 **Input**
@@ -282,7 +296,7 @@ list
 
 ```text
  ATTENTION, EVERYONE! Yapper proudly presents your complete and glorious task list:
- 1.[D][ ] submit report (by: no idea :-p)
+ 1.[D][ ] submit report (by: Dec 2 2019, 6:00PM)
 ____________________________________________________________
 ```
 
@@ -291,14 +305,14 @@ ____________________________________________________________
 **Input**
 
 ```text
-event project meeting /from Mon 2pm /to 4pm
+event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
 ```
 
 **Expected output**
 
 ```text
  OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:
-   [E][ ] project meeting (from: Mon 2pm to: 4pm)
+   [E][ ] project meeting (from: Dec 2 2019, 2:00PM to: Dec 2 2019, 4:00PM)
  Your legendary list now contains 2 task(s). Yes, I counted them personally!
 ____________________________________________________________
 ```
@@ -316,8 +330,9 @@ help
 ```text
  PREPARE YOURSELF! Here is Yapper's impressively comprehensive command repertoire:
   todo <description>
-  deadline <description> /by <date or time>
-  event <description> /from <start> /to <end>
+  deadline <description> /by <yyyy-MM-dd HHmm>
+  event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>
+  on <yyyy-MM-dd>
   list
   mark <task number>
   unmark <task number>
@@ -339,8 +354,8 @@ list
 
 ```text
  ATTENTION, EVERYONE! Yapper proudly presents your complete and glorious task list:
- 1.[D][ ] submit report (by: no idea :-p)
- 2.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+ 1.[D][ ] submit report (by: Dec 2 2019, 6:00PM)
+ 2.[E][ ] project meeting (from: Dec 2 2019, 2:00PM to: Dec 2 2019, 4:00PM)
 ____________________________________________________________
 ```
 
@@ -386,14 +401,14 @@ ____________________________________________________________
 **Input**
 
 ```text
-event project meeting /from Aug 6th 2pm /to 4pm
+event project meeting /from 2019-08-06 1400 /to 2019-08-06 1600
 ```
 
 **Expected output**
 
 ```text
  OHOHO, MAGNIFICENT! I have triumphantly added this dazzling new task:
-   [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+   [E][ ] project meeting (from: Aug 6 2019, 2:00PM to: Aug 6 2019, 4:00PM)
  Your legendary list now contains 2 task(s). Yes, I counted them personally!
 ____________________________________________________________
 ```
@@ -472,7 +487,7 @@ delete 2
 
 ```text
  BEHOLD! With one decisive flourish, I have removed this task from existence:
-   [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+   [E][ ] project meeting (from: Aug 6 2019, 2:00PM to: Aug 6 2019, 4:00PM)
  Your freshly streamlined list now contains 2 task(s). Delightfully tidy!
 ____________________________________________________________
 ```
