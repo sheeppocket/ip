@@ -51,8 +51,7 @@ public class ParserTest {
     @Test
     public void parseTaskIndex_invalidNumber_throwsException() {
         for (String value : new String[] {"", "0", "-1", "4", "one", "1.5", "1 2", "2147483648"}) {
-            assertThrows(YapperException.class,
-                    () -> parser.parseTaskIndex("mark " + value, "mark", 3), value);
+            assertThrows(YapperException.class, () -> parser.parseTaskIndex("mark " + value, "mark", 3), value);
         }
         assertThrows(YapperException.class, () -> parser.parseTaskIndex("mark 1", "mark", 0));
     }

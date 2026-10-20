@@ -54,6 +54,12 @@ public class Parser {
             throw new YapperException("The " + command + " description cannot be empty. "
                     + "Try: " + command + " <task description>");
         }
+        if (description.contains("\n") || description.contains("\r")) {
+            throw new YapperException("Task descriptions must stay on one line.");
+        }
+        if (description.contains("|")) {
+            throw new YapperException("Task descriptions cannot contain the pipe character (|).");
+        }
         return description;
     }
 

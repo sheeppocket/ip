@@ -10,6 +10,8 @@ package yapper;
 public enum CommandType {
     /** Displays all tasks. */
     LIST("list", false),
+    /** Summarizes task completion counts. */
+    STATS("stats", false),
     /** Displays supported commands. */
     HELP("help", false),
     /** Marks a numbered task completed. */

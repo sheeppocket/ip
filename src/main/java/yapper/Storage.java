@@ -1,8 +1,10 @@
 package yapper;
 
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +12,6 @@ import java.util.List;
  * Saves tasks to disk and restores them when Yapper starts again.
  */
 public class Storage {
-    /** Delimiter describing the pipe-separated storage format. */
-    private static final String FIELD_SEPARATOR = " | ";
-
     /** File from which tasks are loaded and to which they are saved. */
     private final Path filePath;
 
@@ -48,13 +47,14 @@ public class Storage {
     }
 
     /**
-     * Writes the complete current task list, creating its parent directory when needed.
+     * Writes tasks to a temporary file before replacing the save, creating parent directories as needed.
+     * Uses atomic replacement when supported to protect the previous save from interrupted writes.
      *
      * @param tasks Current tasks to persist.
      * @throws IOException If the directory or file cannot be written.
      */
     public void save(List<Task> tasks) throws IOException {
-        Path parentDirectory = filePath.getParent();
+        Path parentDirectory = filePath.toAbsolutePath().getParent();
         if (parentDirectory != null) {
             Files.createDirectories(parentDirectory);
         }
@@ -62,7 +62,18 @@ public class Storage {
         List<String> lines = tasks.stream()
                 .map(Task::toDataString)
                 .toList();
-        Files.write(filePath, lines);
+        Path temporaryFile = Files.createTempFile(parentDirectory, "yapper-", ".tmp");
+        try {
+            Files.write(temporaryFile, lines);
+            try {
+                Files.move(temporaryFile, filePath, StandardCopyOption.ATOMIC_MOVE,
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException exception) {
+                Files.move(temporaryFile, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } finally {
+            Files.deleteIfExists(temporaryFile);
+        }
     }
 
     /**
@@ -87,7 +98,12 @@ public class Storage {
                 }
                 case "E" -> {
                     requireFieldCount(fields, 5);
-                    yield new Event(fields[2], TaskDateTime.parse(fields[3]), TaskDateTime.parse(fields[4]));
+                    java.time.LocalDateTime start = TaskDateTime.parse(fields[3]);
+                    java.time.LocalDateTime end = TaskDateTime.parse(fields[4]);
+                    if (end.isBefore(start)) {
+                        throw new IllegalArgumentException("event end precedes start");
+                    }
+                    yield new Event(fields[2], start, end);
                 }
                 default -> throw new IllegalArgumentException("unknown task type");
             };
@@ -114,6 +130,9 @@ public class Storage {
     private void requireFieldCount(String[] fields, int expectedCount) {
         if (fields.length != expectedCount) {
             throw new IllegalArgumentException("wrong number of fields");
+        }
+        if (fields[2].isBlank()) {
+            throw new IllegalArgumentException("empty task description");
         }
     }
 }

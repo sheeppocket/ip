@@ -75,6 +75,8 @@ public class StorageTest {
     public void load_malformedRecords_reportsPhysicalLineNumberAndReason() throws Exception {
         Path file = temporaryDirectory.resolve("tasks.txt");
         String[][] cases = {
+            {"T | 0 |   ", "empty task description"},
+            {"E | 0 | trip | 2024-03-01 | 2024-02-29", "event end precedes start"},
             {"Q | 0 | book", "unknown task type"},
             {"T | 2 | book", "invalid completion status"},
             {"T | 0", "wrong number of fields"},

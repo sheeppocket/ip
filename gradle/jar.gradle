@@ -1,7 +1,12 @@
-// Apply after the Java plugin; Yapper has no third-party runtime dependencies.
+// Bundle JavaFX classes and native libraries for the supported desktop platforms.
 tasks.named('jar', org.gradle.api.tasks.bundling.Jar) {
     archiveFileName = 'yapper.jar'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes('Main-Class': 'yapper.Yapper')
+        attributes('Main-Class': 'yapper.Launcher')
     }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'module-info.class'
 }

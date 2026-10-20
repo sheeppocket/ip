@@ -15,13 +15,13 @@ Use the checked-in wrapper; a separate Gradle installation is unnecessary:
 
 The first invocation downloads Gradle; resolving test dependencies also requires
 internet access. Generated files go in `build/`; local Gradle state goes in
-`.gradle/`. Both directories are already ignored. Test results, once tests exist,
+`.gradle/`. Both directories are already ignored. Test results
 are available at `build/reports/tests/test/index.html`.
 
 Production sources belong under `src/main/java/yapper` with package `yapper`.
-The application entry point is `yapper.Yapper`. JUnit Jupiter tests belong under
+The GUI entry point is `yapper.Launcher`; it starts the FXML interface. JUnit Jupiter tests belong under
 `src/test/java/yapper`; the build supplies Jupiter 5.13.4 and its platform launcher.
-The `run` task forwards standard input so interactive commands work.
+Use `run` for the GUI or `runCli` for interactive console commands.
 
 ## Wrapper provenance
 
@@ -47,10 +47,9 @@ entry point and build defaults are adapted to Yapper: the reviewed Gradle 9.1.0
 wrapper, Java 25 toolchain, and Jupiter 5.13.4 configuration are retained.
 The application plugin also applies Java support. The Unix wrapper is executable.
 
-A-Packages is integrated, so ordinary `run` launches `yapper.Yapper` directly.
+Ordinary `run` launches the JavaFX GUI through `yapper.Launcher`.
 The `test` task runs the JUnit tests under `src/test/java/yapper`, including
 keyword search, parsing, dates, task-list operations, and persistence.
 The A-Jar configuration is applied from `gradle/jar.gradle`; `jar` creates
 `build/libs/yapper.jar`. See [JAR instructions](jar.md) for distribution and
-execution. This build does not need the starter Shadow plugin because the
-application has no runtime dependencies.
+execution. The JAR task bundles JavaFX runtime dependencies and desktop native libraries.
