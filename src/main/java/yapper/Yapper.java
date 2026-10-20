@@ -1,7 +1,12 @@
 package yapper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Coordinates command parsing, task operations, persistence, and the console UI.
@@ -9,6 +14,15 @@ import java.nio.file.Path;
 public class Yapper {
     /** Default save file relative to the working directory. */
     private static final Path STORAGE_PATH = Path.of("data", "yapper.txt");
+
+    /** Per-instance response buffer, independent of global standard output. */
+    private final ByteArrayOutputStream response = new ByteArrayOutputStream();
+    /** Whether initialization has already been attempted. */
+    private boolean initialized;
+    /** Persistent startup error; commands are blocked if loading failed. */
+    private String loadingError;
+    /** Whether the user has requested application exit. */
+    private boolean exitRequested;
 
     /** Console input and output handler. */
     private final Ui ui;
@@ -28,39 +42,114 @@ public class Yapper {
      */
     public Yapper(Path storagePath) {
         this.storagePath = storagePath;
-        ui = new Ui();
+        ui = new Ui(new PrintStream(response, true, StandardCharsets.UTF_8));
         parser = new Parser();
         storage = new Storage(storagePath);
     }
 
     /**
-     * Loads saved tasks and processes commands until bye or the end of input.
+     * Creates an application using the default save file.
      */
-    public void run() {
-        ui.showWelcome();
+    public Yapper() {
+        this(STORAGE_PATH);
+    }
+
+    /**
+     * Loads saved tasks once, retaining errors so damaged saves cannot be overwritten.
+     */
+    private void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
         try {
             tasks = new TaskList(storage.load());
         } catch (IOException | YapperException exception) {
-            ui.showLoadingError(exception.getMessage(), storagePath);
-            return;
+            loadingError = exception.getMessage();
         }
+    }
 
-        while (ui.hasNextCommand()) {
-            String command = ui.readCommand();
-            CommandType commandType = parser.parseCommandType(command);
-            if (commandType == CommandType.BYE) {
-                break;
+    /**
+     * Returns the greeting and any startup error for a console or graphical view.
+     *
+     * @return Welcome text, including a load failure when applicable.
+     */
+    public String getWelcome() {
+        response.reset();
+        ui.showWelcome();
+        initialize();
+        if (loadingError != null) {
+            ui.showLoadingError(loadingError, storagePath);
+        }
+        return response.toString(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Processes one command without reading console input or redirecting global output.
+     * Failed saves restore both task order and completion status.
+     *
+     * @param input Command supplied by the user.
+     * @return Response text ready for display.
+     */
+    public String getResponse(String input) {
+        response.reset();
+        initialize();
+        String command = input.trim();
+        CommandType commandType = parser.parseCommandType(command);
+        if (exitRequested || commandType == CommandType.BYE) {
+            exitRequested = true;
+            ui.showGoodbye();
+        } else if (loadingError != null) {
+            ui.showLoadingError(loadingError, storagePath);
+        } else {
+            List<Task> previousTasks = tasks.asList();
+            List<Boolean> previousStatus = new ArrayList<>();
+            for (Task task : previousTasks) {
+                previousStatus.add("X".equals(task.getStatusIcon()));
             }
             try {
                 execute(commandType, command);
             } catch (YapperException exception) {
                 ui.showError(exception.getMessage());
             } catch (IOException exception) {
+                tasks = new TaskList(previousTasks);
+                for (int i = 0; i < previousStatus.size(); i++) {
+                    if (previousStatus.get(i)) {
+                        tasks.mark(i);
+                    } else {
+                        tasks.unmark(i);
+                    }
+                }
                 ui.showSavingError(exception.getMessage());
             }
             ui.showSeparator();
         }
-        ui.showGoodbye();
+        return response.toString(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Returns whether bye has been requested.
+     *
+     * @return Whether the view should stop accepting commands.
+     */
+    public boolean isExitRequested() {
+        return exitRequested;
+    }
+
+    /**
+     * Loads saved tasks and processes console commands until bye or the end of input.
+     */
+    public void run() {
+        System.out.print(getWelcome());
+        if (loadingError != null) {
+            return;
+        }
+        while (!exitRequested && ui.hasNextCommand()) {
+            System.out.print(getResponse(ui.readCommand()));
+        }
+        if (!exitRequested) {
+            System.out.print(getResponse("bye"));
+        }
     }
 
     /**
@@ -69,12 +158,13 @@ public class Yapper {
      * @param commandType Recognized command type.
      * @param command Trimmed command line including its arguments.
      * @throws YapperException If the command or its arguments are invalid.
-     * @throws IOException If saving fails; the in-memory change is not rolled back.
+     * @throws IOException If saving fails; the caller restores the previous state.
      * @throws AssertionError If BYE reaches dispatch instead of being handled by the input loop.
      */
     private void execute(CommandType commandType, String command) throws YapperException, IOException {
         switch (commandType) {
             case LIST -> ui.printTaskList(tasks.asList());
+            case STATS -> ui.printStatistics(tasks.asList());
             case HELP -> ui.printHelp();
             case MARK -> {
                 Task task = tasks.mark(parser.parseTaskIndex(command, "mark", tasks.size()));
@@ -99,6 +189,7 @@ public class Yapper {
             case UNKNOWN -> throw new YapperException("Please precede a task with a command to add it. "
                     + "Otherwise, type 'help' for a list of commands.");
             case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");
+            default -> throw new AssertionError("Unhandled command type: " + commandType);
         }
     }
 
@@ -106,7 +197,7 @@ public class Yapper {
      * Adds and persists a parsed task before showing its confirmation.
      *
      * @param task Parsed task to append.
-     * @throws IOException If saving fails; the task remains in memory.
+     * @throws IOException If saving fails; the caller restores the previous state.
      */
     private void addTask(Task task) throws IOException {
         tasks.add(task);

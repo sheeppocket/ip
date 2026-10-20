@@ -335,6 +335,7 @@ help
   on <yyyy-MM-dd>
   find <keyword>
   list
+  stats
   mark <task number>
   unmark <task number>
   delete <task number>
@@ -696,6 +697,77 @@ ____________________________________________________________
 ```
 
 #### Command 11
+
+**Input**
+
+```text
+bye
+```
+
+**Expected output**
+
+```text
+ FAREWELL, magnificent human! Yapper shall now stop talking--an historic occasion!
+ Return soon, because your tasks and I will have an absolutely enormous amount to discuss.
+____________________________________________________________
+```
+
+### UI-5: Statistics and unsafe descriptions
+
+**Aim:** Verify empty statistics and rejection of reserved storage separators without changing the list.
+
+#### Command 1
+
+**Input**
+
+```text
+stats
+```
+
+**Expected output**
+
+```text
+ YOUR TASK STATISTICS:
+ Total: 0
+ Completed: 0
+ Pending: 0
+____________________________________________________________
+```
+
+#### Command 2
+
+**Input**
+
+```text
+todo read | book
+```
+
+**Expected output**
+
+```text
+ WHOOPS-A-DAISY! Yapper has encountered a tiny dramatic complication: Task descriptions cannot contain the pipe character (|).
+____________________________________________________________
+```
+
+#### Command 3
+
+**Input**
+
+```text
+stats
+```
+
+**Expected output**
+
+```text
+ YOUR TASK STATISTICS:
+ Total: 0
+ Completed: 0
+ Pending: 0
+____________________________________________________________
+```
+
+#### Command 4
 
 **Input**
 
