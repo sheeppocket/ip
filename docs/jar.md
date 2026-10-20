@@ -1,58 +1,49 @@
 # Build and run Yapper as a JAR
 
-The Gradle build applies `gradle/jar.gradle` to package the `yapper.Yapper` entry point.
-
-The script configures the standard Java plugin's `jar` task with an executable
-manifest and a stable filename. Yapper uses only JDK classes at runtime, so it
-does not need a fat JAR. JUnit belongs to the test dependencies and is not shipped.
-If runtime libraries are added later (for example JavaFX), revisit dependency
-packaging; this script does not bundle external libraries.
+The Gradle build applies `gradle/jar.gradle` to create `build/libs/yapper.jar`.
+This fat JAR contains the application, JavaFX classes and desktop native
+libraries. Its entry point is `yapper.Launcher`; JUnit is not distributed.
 
 ## Build
 
-Install JDK 25 and point `JAVA_HOME` and `PATH` to it. Check `java -version` and
-the Gradle JVM before building. From the project root on Windows PowerShell:
+Install JDK 25 and set `JAVA_HOME` and `PATH` to it. From the project folder:
 
 ```powershell
 java -version
 .\gradlew.bat --version
-.\gradlew.bat clean jar
+.\gradlew.bat clean build
 ```
 
-On macOS/Linux, use `./gradlew --version` and `./gradlew clean jar` instead.
-On macOS, `sdk use java 25.0.3.fx-zulu` selects the project's required JDK if
-installed through SDKMAN.
+On macOS/Linux, use `./gradlew --version` and `./gradlew clean build`.
+For a packaging-only build, use `jar` instead of `build`; this skips tests.
+On macOS, the course specifies `sdk use java 25.0.3.fx-zulu` when using SDKMAN.
 
-The executable is `build/libs/yapper.jar`. Build outputs are already ignored by
-Git through `/build/`; do not commit the generated JAR.
+The single output is `build/libs/yapper.jar`. Generated build files are ignored
+by Git. The build bundles native libraries for Windows x64, Linux x64/ARM64,
+and macOS x64/ARM64. Bundling these libraries does not replace a real smoke test
+on each target operating system.
 
-## Run
+## Smoke test
 
-Copy only `build/libs/yapper.jar` into an empty folder. Open a terminal in that
-folder, ensure `java -version` reports Java 25, and run:
+Copy `yapper.jar` into an empty folder. Open a terminal in that folder, confirm
+Java 25, and run:
 
 ```text
-java -jar "yapper.jar"
+java -jar yapper.jar
 ```
 
-Try these commands:
+In the window, send `todo verify jar packaging`, `list`, `mark 1`, and `stats`.
+Expect one completed task and zero pending tasks. Enter `bye`, close the window,
+then reopen the JAR and send `list`: the completed task should remain.
+Also try an invalid command and resize the window to check readable responses.
 
-```text
-todo verify jar packaging
-list
-bye
-```
+Yapper creates `data/yapper.txt` under the terminal's working folder. Keep that
+folder to preserve the saved list. Running the JAR needs a desktop environment.
 
-Run the same JAR again and enter `list`, then `bye`. The task should still be
-present. Yapper creates `data/yapper.txt` relative to the terminal's working
-directory when a task changes. Keep that folder to preserve your tasks.
+## Distribution
 
-## Course delivery
-
-The [A-Jar requirements](https://nus-cs2103-ay2627-s1.github.io/website/admin/ip-w3.html#A-Jar)
-call for an executable JAR and distribution through a GitHub release, rather
-than committing the binary. After integration and validation, create the
-lightweight milestone tag `A-Jar` and attach `build/libs/yapper.jar` to a release
-when publishing is authorized. Publishing requires a separately authorized push and release upload.
-
-See also the [SE-EDU JAR guide](https://se-education.org/guides/tutorials/jar.html).
+Publish one `.jar` asset in a public GitHub release, then download that asset
+and repeat the smoke test. The course evaluates the latest release. Verify its
+visibility without signing in; do not substitute a zip archive for the JAR.
+See the [remaining delivery checks](remaining-course-work.md) for work that
+still needs external verification.
