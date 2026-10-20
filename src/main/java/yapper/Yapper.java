@@ -67,6 +67,7 @@ public class Yapper {
         } catch (IOException | YapperException exception) {
             loadingError = exception.getMessage();
         }
+        assert (tasks != null) != (loadingError != null) : "Loading must produce tasks or an error";
     }
 
     /**
@@ -112,6 +113,7 @@ public class Yapper {
             } catch (YapperException exception) {
                 ui.showError(exception.getMessage());
             } catch (IOException exception) {
+                assert previousTasks.size() == previousStatus.size() : "Rollback snapshot must stay aligned";
                 tasks = new TaskList(previousTasks);
                 for (int i = 0; i < previousStatus.size(); i++) {
                     if (previousStatus.get(i)) {
@@ -162,6 +164,8 @@ public class Yapper {
      * @throws AssertionError If BYE reaches dispatch instead of being handled by the input loop.
      */
     private void execute(CommandType commandType, String command) throws YapperException, IOException {
+        assert tasks != null : "Commands require a successfully loaded task list";
+        assert commandType != CommandType.BYE : "Exit is handled before command dispatch";
         switch (commandType) {
             case LIST -> ui.printTaskList(tasks.asList());
             case STATS -> ui.printStatistics(tasks.asList());
