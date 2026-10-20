@@ -3,6 +3,7 @@ package yapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Owns the task collection and operations on tasks, independently of input and storage.
@@ -109,13 +110,10 @@ public class TaskList {
      * @return Matching zero-based indices in their original order.
      */
     public List<Integer> indicesMatching(String keyword) {
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).containsKeyword(keyword)) {
-                indices.add(i);
-            }
-        }
-        return indices;
+        return IntStream.range(0, tasks.size())
+                .filter(index -> tasks.get(index).containsKeyword(keyword))
+                .boxed()
+                .toList();
     }
 
     /**
@@ -125,12 +123,9 @@ public class TaskList {
      * @return Matching indices in list order; empty when no tasks occur on the date.
      */
     public List<Integer> indicesOn(LocalDate date) {
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).occursOn(date)) {
-                indices.add(i);
-            }
-        }
-        return indices;
+        return IntStream.range(0, tasks.size())
+                .filter(index -> tasks.get(index).occursOn(date))
+                .boxed()
+                .toList();
     }
 }
