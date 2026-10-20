@@ -20,8 +20,10 @@
   HTTP 200 without authentication. The real full-window image was visually checked.
 - [x] Existing [course PR #589](https://github.com/NUS-CS2103-AY2627-S1/ip/pull/589)
   describes the current app and includes the required Markdown elements.
-- [ ] Verify the latest release contains one public JAR asset, download it,
-  and test that exact artifact. Release verification is recorded after publication.
+- [x] [Yapper 1.0](https://github.com/sheeppocket/ip/releases/tag/v1.0) contains one public JAR asset.
+  Its unauthenticated download matches the tested build, passes GUI interactions,
+  and opens via `java -jar yapper.jar` in an isolated folder. Linux CI also
+  passes the GUI smoke test under Xvfb. See [verification details](verification.md).
 
 ## Only checks requiring the student's participation
 
