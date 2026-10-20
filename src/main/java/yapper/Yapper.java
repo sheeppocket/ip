@@ -166,16 +166,8 @@ public class Yapper {
             case LIST -> ui.printTaskList(tasks.asList());
             case STATS -> ui.printStatistics(tasks.asList());
             case HELP -> ui.printHelp();
-            case MARK -> {
-                Task task = tasks.mark(parser.parseTaskIndex(command, "mark", tasks.size()));
-                storage.save(tasks.asList());
-                ui.showTaskStatus(task, true);
-            }
-            case UNMARK -> {
-                Task task = tasks.unmark(parser.parseTaskIndex(command, "unmark", tasks.size()));
-                storage.save(tasks.asList());
-                ui.showTaskStatus(task, false);
-            }
+            case MARK -> updateTaskStatus(command, true);
+            case UNMARK -> updateTaskStatus(command, false);
             case DELETE -> {
                 Task task = tasks.delete(parser.parseTaskIndex(command, "delete", tasks.size()));
                 storage.save(tasks.asList());
@@ -191,6 +183,22 @@ public class Yapper {
             case BYE -> throw new AssertionError("The bye command should be handled before dispatch.");
             default -> throw new AssertionError("Unhandled command type: " + commandType);
         }
+    }
+
+    /**
+     * Applies either completion command through the same validation and save sequence.
+     *
+     * @param command Full mark or unmark command.
+     * @param isDone Requested completion state.
+     * @throws YapperException If the task number is invalid.
+     * @throws IOException If saving fails; the caller restores the previous state.
+     */
+    private void updateTaskStatus(String command, boolean isDone) throws YapperException, IOException {
+        String keyword = isDone ? "mark" : "unmark";
+        int index = parser.parseTaskIndex(command, keyword, tasks.size());
+        Task task = isDone ? tasks.mark(index) : tasks.unmark(index);
+        storage.save(tasks.asList());
+        ui.showTaskStatus(task, isDone);
     }
 
     /**
