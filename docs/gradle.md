@@ -13,7 +13,7 @@ Use the checked-in wrapper; a separate Gradle installation is unnecessary:
 | Run the chatbot | `.\gradlew.bat --console=plain run` | `sh gradlew --console=plain run` |
 | Run tests | `.\gradlew.bat test` | `sh gradlew test` |
 
-The first invocation downloads Gradle; resolving test dependencies also requires
+The first invocation downloads Gradle; resolving JavaFX, Checkstyle, and test dependencies also requires
 internet access. Generated files go in `build/`; local Gradle state goes in
 `.gradle/`. Both directories are already ignored. Test results
 are available at `build/reports/tests/test/index.html`.

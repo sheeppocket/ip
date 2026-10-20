@@ -29,3 +29,6 @@ jobs:
 
       - name: Test, check coding style, and build
         run: ./gradlew --no-daemon clean check build
+
+      - name: Exercise the JavaFX window on Linux
+        run: xvfb-run -a ./gradlew --no-daemon guiSmoke

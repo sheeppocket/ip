@@ -19,8 +19,7 @@ For a packaging-only build, use `jar` instead of `build`; this skips tests.
 On macOS, the course specifies `sdk use java 25.0.3.fx-zulu` when using SDKMAN.
 
 The single output is `build/libs/yapper.jar`. Generated build files are ignored
-by Git. The build bundles native libraries for Windows x64, Linux x64/ARM64,
-and macOS x64/ARM64. Bundling these libraries does not replace a real smoke test
+by Git. The build bundles native libraries for Windows x64, Linux x64, and macOS x64. ARM64 native libraries are not bundled or verified. Bundling these libraries does not replace a real smoke test
 on each target operating system.
 
 ## Smoke test

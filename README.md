@@ -40,3 +40,5 @@ FXML conversation interface follow concepts from the
 OpenAI Codex assisted with implementation, refactoring, tests, documentation,
 and course-requirement checks; the student remains responsible for reviewing
 and understanding the submitted work.
+
+Download the [latest executable release](https://github.com/sheeppocket/ip/releases/latest) and read the [published user guide](https://sheeppocket.github.io/ip/). The bundled native libraries target Windows, Linux, and macOS x64; ARM64 is not bundled.

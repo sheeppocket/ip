@@ -7,13 +7,13 @@ record deadlines and events, and find tasks by description or date.
 
 ## Getting started
 
-1. Install Java 25. Check that `java -version` reports version 25.
-2. From the project folder, build `build/libs/yapper.jar` using
-   `./gradlew clean jar` (Windows PowerShell: `.\gradlew.bat clean jar`).
-   See the [JAR guide](jar.md) for setup details.
-3. Copy `yapper.jar` into a folder where you want to keep your tasks.
+1. Install Java 25 for Windows, Linux, or macOS **x64**. Check `java -version`.
+2. Download `yapper.jar` from the [latest release](https://github.com/sheeppocket/ip/releases/latest).
+3. Place it in a folder where you want to keep your tasks.
 4. Open a terminal in that folder and run `java -jar yapper.jar`.
-5. In the window, type `help` and press Enter or click **Send**. Try `todo read book`, then `list`.
+5. Type `help` in the window and press Enter or click **Send**. Try `todo read book`, then `list`.
+
+ARM64 native libraries are not bundled. Building from source is explained in the [JAR guide](jar.md).
 
 Send one command at a time. Resize the window as needed; responses wrap and the conversation scrolls. Command words and separators are lowercase and
 case-sensitive. Replace text in angle brackets with your own values; do not

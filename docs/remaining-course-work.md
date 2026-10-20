@@ -1,38 +1,42 @@
-# Remaining course checks
+# Delivery and personal checks
 
-Implementation and published delivery are separate checks. Only mark an item
-complete after verifying its evidence; local tags alone do not confirm that a
-release, PR, or website is public.
+## Verified implementation and process
 
-## Delivery verification
+- [x] JavaFX GUI using FXML, packaged JavaFX dependencies, shared command backend,
+  and `stats` (C-Statistics). The separate tutorial also reaches Part 4.
+- [x] Java 25 tests, Checkstyle, and GUI interaction checks pass. Console regression:
+  46 commands across five cases. JUnit: 55 tests, including save rollback and reload.
+- [x] Three independent branches prepared before merging any PR:
+  [assertions #3](https://github.com/sheeppocket/ip/pull/3),
+  [code quality #4](https://github.com/sheeppocket/ip/pull/4), and
+  [streams #5](https://github.com/sheeppocket/ip/pull/5).
+  Each was merged on GitHub with a merge commit, pulled and tagged; remaining
+  branches incorporated master, passed checks, and were pushed between merges.
+- [x] Remote milestone tags include `Level-10`, `BCD-Extension`, `A-Assertions`,
+  `A-CodeQuality`, `A-Streams`, `A-CI`, `A-CheckStyle`, `A-BetterGui`,
+  `A-MoreErrorHandling`, and `A-MoreTesting`. `A-FullCommitMessage` points to
+  `15a56f5`; commit bodies explain the changes and rationale.
+- [x] [Published guide](https://sheeppocket.github.io/ip/) and `Ui.png` return
+  HTTP 200 without authentication. The real full-window image was visually checked.
+- [x] Existing [course PR #589](https://github.com/NUS-CS2103-AY2627-S1/ip/pull/589)
+  describes the current app and includes the required Markdown elements.
+- [ ] Verify the latest release contains one public JAR asset, download it,
+  and test that exact artifact. Release verification is recorded after publication.
 
-- [ ] Verify the completed JavaFX GUI, all commands, save/reload, and failed-save
-  rollback using the Java 25 build and the packaged JAR from an empty folder.
-- [ ] Verify the three parallel PRs (`branch-A-Assertions`,
-  `branch-A-CodeQuality`, `branch-A-Streams`) target this fork's `master`, were
-  prepared before any was merged, and use merge commits. After each merge,
-  pull `master`, tag its merge, then merge `master` into remaining branches,
-  test and push before proceeding. Check the corresponding `A-*` tags remotely.
-- [ ] Verify milestone tags against their actual changes, including `Level-10`,
-  `BCD-Extension` (the `stats` feature, category C-Statistics), and
-  `A-FullCommitMessage`. Audit the last five commit subjects against conventions.
-- [ ] Verify `docs/Ui.png` shows the full real GUI window, and GitHub Pages serves
-  `docs/README.md` from `master` + `/docs` with readable formatting and links.
-- [ ] Verify the latest public GitHub release contains one Java 25 fat JAR asset;
-  download and smoke-test that exact asset. The final submission consists of the
-  published JAR, user guide, and code, with no separate final Canvas upload.
+## Only checks requiring the student's participation
 
-## Checks requiring the student's participation
+- [ ] Confirm no teammate chose **C-Statistics**. If there is a clash, change
+  the extension choice rather than claiming team coordination has happened.
+- [ ] Ask a teammate on another OS to test the release. Native libraries target
+  Windows, Linux, and macOS x64; ARM64 is not bundled.
+- [ ] Confirm assigned Week 4 peer reviews and Week 8 Canvas evaluations.
+  Historical participation and deadlines cannot be recreated by code changes.
+- [ ] Review the AI-assisted work and the course dashboard. The course also
+  encourages personally practising full commit messages and Markdown.
 
-- [ ] Confirm teammates chose different B/C/D extensions; this project uses
-  **C-Statistics**. Adjust the choice if it duplicates a teammate's selection.
-- [ ] Arrange a real smoke test on another operating system. Bundled libraries
-  and automated checks cannot establish that someone tested that environment.
-- [ ] Confirm the assigned Week 4 peer PR reviews and Week 8 Canvas evaluations
-  were completed. Historical participation and submission dates cannot be
-  recreated by making code changes now.
-- [ ] Review and understand AI-assisted changes and confirm the course dashboard
-  reflects the actual completed work, including the required weekly participation.
+The final submission is the published JAR, user guide, and code; there is no
+separate final Canvas upload. This checklist does not claim historical grading
+or participation requirements were satisfied.
 
 Sources: [Week 5](https://nus-cs2103-ay2627-s1.github.io/website/admin/ip-w5.html),
 [Week 6](https://nus-cs2103-ay2627-s1.github.io/website/admin/ip-w6.html),
